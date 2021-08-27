@@ -184,9 +184,9 @@ class ControlButtons extends StatelessWidget {
               showSliderDialog(
                 context: context,
                 title: "Adjust speed",
-                divisions: 10,
+                divisions: 20,
                 min: 0.5,
-                max: 1.5,
+                max: 10.5,
                 value: player.speed,
                 stream: player.speedStream,
                 onChanged: player.setSpeed,
