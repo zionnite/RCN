@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rcn/screens/event_page.dart';
 import 'package:rcn/screens/home_page.dart';
+import 'package:rcn/screens/message_player.dart';
 import 'package:rcn/util.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -17,7 +18,7 @@ class _BottomNavState extends State<BottomNav> {
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     EventPage(),
-    EventPage(),
+    MessagePlayer(),
     EventPage(),
   ];
 
