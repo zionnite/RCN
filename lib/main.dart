@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:rcn/component/bottom_nav.dart';
 import 'package:rcn/screens/event_page.dart';
 import 'package:rcn/screens/home_page.dart';
+import 'package:rcn/services/service_locator.dart';
 
-void main() {
+void main() async {
+  await setupServiceLocator();
   runApp(MyApp());
 }
 
