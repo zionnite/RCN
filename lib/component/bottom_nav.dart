@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rcn/screens/event_page.dart';
 import 'package:rcn/screens/home_page.dart';
 import 'package:rcn/screens/message_player.dart';
-import 'package:rcn/screens/music_message_player.dart';
 import 'package:rcn/util.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -20,8 +19,8 @@ class _BottomNavState extends State<BottomNav> {
     HomePage(),
     EventPage(),
     MessagePlayer(),
-    MusicMessagePlayer(),
-    MusicMessagePlayer(),
+    EventPage(),
+    // EventPage(),
   ];
 
   @override
@@ -68,12 +67,12 @@ class _BottomNavState extends State<BottomNav> {
           ),
 
           /// Profile
-          SalomonBottomBarItem(
-            icon: Icon(Icons.video_call_sharp),
-            title: Text("Live"),
-            selectedColor: bgColorWhite,
-            unselectedColor: primaryColorLight,
-          ),
+          // SalomonBottomBarItem(
+          //   icon: Icon(Icons.video_call_sharp),
+          //   title: Text("Live"),
+          //   selectedColor: bgColorWhite,
+          //   unselectedColor: primaryColorLight,
+          // ),
         ],
       ),
     );
