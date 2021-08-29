@@ -292,14 +292,14 @@ class ControlButtons extends StatelessWidget {
           icon: Icon(Icons.volume_up),
           onPressed: () {
             showSliderDialog(
-              context: context,
-              title: "Adjust volume",
-              divisions: 10,
-              min: 0.0,
-              max: 1.0,
-              stream: player.volumeStream,
-              onChanged: player.setVolume,
-            );
+                context: context,
+                title: "Adjust volume",
+                divisions: 10,
+                min: 0.0,
+                max: 1.0,
+                stream: player.volumeStream,
+                onChanged: player.setVolume,
+                value: player.speed);
           },
         ),
         StreamBuilder<SequenceState?>(
@@ -359,14 +359,14 @@ class ControlButtons extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold)),
             onPressed: () {
               showSliderDialog(
-                context: context,
-                title: "Adjust speed",
-                divisions: 10,
-                min: 0.5,
-                max: 1.5,
-                stream: player.speedStream,
-                onChanged: player.setSpeed,
-              );
+                  context: context,
+                  title: "Adjust speed",
+                  divisions: 10,
+                  min: 0.5,
+                  max: 1.5,
+                  stream: player.speedStream,
+                  onChanged: player.setSpeed,
+                  value: player.speed);
             },
           ),
         ),

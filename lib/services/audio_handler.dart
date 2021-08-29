@@ -126,9 +126,14 @@ class MyAudioHandler extends BaseAudioHandler {
   void _listenForSequenceStateChanges() {
     _player.sequenceStateStream.listen((SequenceState? sequenceState) {
       final sequence = sequenceState?.effectiveSequence;
-      if (sequence == null || sequence.isEmpty) return;
-      final items = sequence.map((source) => source.tag as MediaItem);
-      queue.add(items.toList());
+      if (sequence == null || sequence.isEmpty) {
+        print('it is empty');
+        return;
+      } else {
+        final items = sequence.map((source) => source.tag as MediaItem);
+        queue.add(items.toList());
+        print('Sequence ${sequenceState.toString()}');
+      }
     });
   }
 

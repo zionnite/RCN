@@ -22,7 +22,7 @@ class PageManager {
 
   // Events: Calls coming from the UI
   void init() async {
-    await _loadPlaylist();
+    //await _loadPlaylist();
     _listenToPlaybackState();
     _listenToCurrentPosition();
     _listenToBufferedPosition();

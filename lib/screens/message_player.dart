@@ -15,12 +15,12 @@ class _MessagePlayerState extends State<MessagePlayer> {
   @override
   void initState() {
     super.initState();
-    getIt<PageManager>().init();
+    // getIt<PageManager>().init();
   }
 
   @override
   void dispose() {
-    getIt<PageManager>().dispose();
+    // getIt<PageManager>().dispose();
     super.dispose();
   }
 
@@ -202,6 +202,7 @@ class PlayButton extends StatelessWidget {
     return ValueListenableBuilder<ButtonState>(
       valueListenable: pageManager.playButtonNotifier,
       builder: (_, value, __) {
+        print('Button State Now ${value}');
         switch (value) {
           case ButtonState.loading:
             return Container(

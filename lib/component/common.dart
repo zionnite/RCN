@@ -147,6 +147,7 @@ void showSliderDialog({
   String valueSuffix = '',
   required Stream<double> stream,
   required ValueChanged<double> onChanged,
+  required value,
 }) {
   showDialog<void>(
     context: context,
