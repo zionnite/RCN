@@ -23,17 +23,19 @@ class PageManager {
   // Events: Calls coming from the UI
   void init() async {
     await _loadPlaylist();
-    _listenToChangesInPlaylist();
     _listenToPlaybackState();
     _listenToCurrentPosition();
     _listenToBufferedPosition();
     _listenToTotalDuration();
     _listenToChangesInSong();
+    _listenToChangesInPlaylist();
   }
 
   Future<void> _loadPlaylist() async {
+    print('who call first - playlist');
     final songRepository = getIt<PlaylistRepository>();
     final playlist = await songRepository.fetchInitialPlaylist();
+
     final mediaItems = playlist
         .map((song) => MediaItem(
               id: song['id'] ?? '',
@@ -42,6 +44,7 @@ class PageManager {
               extras: {'url': song['url']},
             ))
         .toList();
+
     _audioHandler.addQueueItems(mediaItems);
   }
 
@@ -50,9 +53,11 @@ class PageManager {
       if (playlist.isEmpty) {
         playlistNotifier.value = [];
         currentSongTitleNotifier.value = '';
+        print('Playlist is empty');
       } else {
         final newList = playlist.map((item) => item.title).toList();
         playlistNotifier.value = newList;
+        print('player list is not empty');
       }
       _updateSkipButtons();
     });
@@ -128,8 +133,15 @@ class PageManager {
     }
   }
 
-  void play() => _audioHandler.play();
-  void pause() => _audioHandler.pause();
+  void play() {
+    print('calling Playing button');
+    _audioHandler.play();
+  }
+
+  void pause() {
+    print('calling Pause Button');
+    _audioHandler.pause();
+  }
 
   void seek(Duration position) => _audioHandler.seek(position);
 

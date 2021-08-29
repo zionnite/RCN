@@ -6,7 +6,7 @@ Future<AudioHandler> initAudioService() async {
   return await AudioService.init(
     builder: () => MyAudioHandler(),
     config: AudioServiceConfig(
-      androidNotificationChannelId: 'com.mycompany.myapp.audio',
+      androidNotificationChannelId: 'com.rcnauchi.rcn.audio',
       androidNotificationChannelName: 'Audio Service Demo',
       androidNotificationOngoing: true,
       androidStopForegroundOnPause: true,
@@ -15,8 +15,31 @@ Future<AudioHandler> initAudioService() async {
 }
 
 class MyAudioHandler extends BaseAudioHandler {
+  static int _nextMediaId = 0;
   final _player = AudioPlayer();
-  final _playlist = ConcatenatingAudioSource(children: []);
+  final _playlist = ConcatenatingAudioSource(children: [
+    AudioSource.uri(
+      Uri.parse(
+          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
+      tag: MediaItem(
+        id: '${_nextMediaId++}',
+        album: "Science Friday",
+        title: "A Salute To Head-Scratching Science",
+        artUri: Uri.parse(
+            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+      ),
+    ),
+    AudioSource.uri(
+      Uri.parse("https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
+      tag: MediaItem(
+        id: '${_nextMediaId++}',
+        album: "Science Friday",
+        title: "From Cat Rheology To Operatic Incompetence",
+        artUri: Uri.parse(
+            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+      ),
+    )
+  ]);
 
   MyAudioHandler() {
     _loadEmptyPlaylist();
@@ -28,6 +51,7 @@ class MyAudioHandler extends BaseAudioHandler {
 
   Future<void> _loadEmptyPlaylist() async {
     try {
+      print('who call first');
       await _player.setAudioSource(_playlist);
     } catch (e) {
       print("Error: $e");
@@ -111,6 +135,7 @@ class MyAudioHandler extends BaseAudioHandler {
   @override
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
     // manage Just Audio
+
     final audioSource = mediaItems.map(_createAudioSource);
     _playlist.addAll(audioSource.toList());
 
@@ -148,10 +173,16 @@ class MyAudioHandler extends BaseAudioHandler {
   }
 
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() {
+    print('The Play Button Clicked');
+    return _player.play();
+  }
 
   @override
-  Future<void> pause() => _player.pause();
+  Future<void> pause() {
+    print('The Play Button Clicked');
+    return _player.pause();
+  }
 
   @override
   Future<void> seek(Duration position) => _player.seek(position);

@@ -20,8 +20,7 @@ class DemoPlaylist extends PlaylistRepository {
 
   Map<String, String> _nextSong() {
     _songIndex = (_songIndex % _maxSongNumber) + 1;
-    print(
-        'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-$_songIndex.mp3');
+
     return {
       'id': _songIndex.toString().padLeft(3, '0'),
       'title': 'Song $_songIndex',

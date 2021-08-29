@@ -11,8 +11,7 @@ class MessagePlayer extends StatefulWidget {
   _MessagePlayerState createState() => _MessagePlayerState();
 }
 
-class _MessagePlayerState extends State<MessagePlayer>
-    with WidgetsBindingObserver {
+class _MessagePlayerState extends State<MessagePlayer> {
   @override
   void initState() {
     super.initState();
@@ -27,17 +26,19 @@ class _MessagePlayerState extends State<MessagePlayer>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            CurrentSongTitle(),
-            Playlist(),
-            AddRemoveSongButtons(),
-            AudioProgressBar(),
-            AudioControlButtons(),
-          ],
+    return MaterialApp(
+      home: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              CurrentSongTitle(),
+              Playlist(),
+              AddRemoveSongButtons(),
+              AudioProgressBar(),
+              AudioControlButtons(),
+            ],
+          ),
         ),
       ),
     );
@@ -73,12 +74,9 @@ class Playlist extends StatelessWidget {
           return ListView.builder(
             itemCount: playlistTitles.length,
             itemBuilder: (context, index) {
-
               return ListTile(
                 title: Text('${playlistTitles[index]}'),
-
               );
-
             },
           );
         },
@@ -204,7 +202,6 @@ class PlayButton extends StatelessWidget {
     return ValueListenableBuilder<ButtonState>(
       valueListenable: pageManager.playButtonNotifier,
       builder: (_, value, __) {
-        print('this is value: ${value}');
         switch (value) {
           case ButtonState.loading:
             return Container(
