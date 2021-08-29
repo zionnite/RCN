@@ -17,8 +17,6 @@ Future<void> main() async {
   runApp(MusicMessagePlayer());
 }
 
-
-
 class MusicMessagePlayer extends StatefulWidget {
   @override
   _MusicMessagePlayerState createState() => _MusicMessagePlayerState();
