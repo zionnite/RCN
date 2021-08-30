@@ -1,11 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rcnauchi.rcn">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
    <application
         android:label="rcn"
         android:icon="@mipmap/ic_launcher">
-       <uses-permission android:name="android.permission.INTERNET"/>
-       <uses-permission android:name="android.permission.WAKE_LOCK"/>
-       <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
 
         <activity
             android:name="com.ryanheise.audioservice.AudioServiceActivity"

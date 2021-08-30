@@ -26,19 +26,17 @@ class _MessagePlayerState extends State<MessagePlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              CurrentSongTitle(),
-              Playlist(),
-              AddRemoveSongButtons(),
-              AudioProgressBar(),
-              AudioControlButtons(),
-            ],
-          ),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            CurrentSongTitle(),
+            Playlist(),
+            AddRemoveSongButtons(),
+            AudioProgressBar(),
+            AudioControlButtons(),
+          ],
         ),
       ),
     );
@@ -202,7 +200,6 @@ class PlayButton extends StatelessWidget {
     return ValueListenableBuilder<ButtonState>(
       valueListenable: pageManager.playButtonNotifier,
       builder: (_, value, __) {
-        print('Button State Now ${value}');
         switch (value) {
           case ButtonState.loading:
             return Container(
