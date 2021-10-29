@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rcn/component/home_banner.dart';
+import 'package:rcn/component/upcoming_event_card.dart';
 import 'package:rcn/util.dart';
 
 class HomePage extends StatefulWidget {
@@ -120,12 +121,12 @@ class _HomePageState extends State<HomePage> {
 
               Container(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 5.0,
-                        top: 5.0,
-                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 0),
                       child: Text(
                         'Upcoming Apostle\'s Itenary',
                         style: TextStyle(
@@ -135,148 +136,182 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    ListView(
-                      physics: ClampingScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ),
-                          child: Container(
-                            child: Card(
-                              elevation: 15.0,
-                              color: primaryColor,
-                              semanticContainer: true,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: primaryColorLight,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.network(
-                                    'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg',
-                                    //height: 150,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Learning from the persecuted Chukj nhnjknjkjkhihuihiuohuhuihuihouhuihuiohuih uihuih ui hiuohohuoihoiuhuoih ouihouihuihuihuihuih uihuhrch kijji kmkldjfio iojdiiojiod iji iojiojiojio iojiiojioj jiod fijioj iijoi',
-                                      style: TextStyle(
-                                        color: primaryTextColor,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15.0,
-                                      ),
-                                      // overflow: TextOverflow.ellipsis,
-                                      // maxLines: 5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ),
-                          child: Container(
-                            child: Card(
-                              elevation: 15.0,
-                              color: primaryColor,
-                              semanticContainer: true,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: primaryColorLight,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.network(
-                                    'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg',
-                                    //height: 150,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Learning from the persecuted Chukj nhnjknjkjkhihuihiuohuhuihuihouhuihuiohuih uihuih ui hiuohohuoihoiuhuoih ouihouihuihuihuihuih uihuhrch kijji kmkldjfio iojdiiojiod iji iojiojiojio iojiiojioj jiod fijioj iijoi',
-                                      style: TextStyle(
-                                        color: primaryTextColor,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15.0,
-                                      ),
-                                      // overflow: TextOverflow.ellipsis,
-                                      // maxLines: 5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ),
-                          child: Container(
-                            child: Card(
-                              elevation: 15.0,
-                              color: primaryColor,
-                              semanticContainer: true,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: primaryColorLight,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.network(
-                                    'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg',
-                                    //height: 150,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Learning from the persecuted Chukj nhnjknjkjkhihuihiuohuhuihuihouhuihuiohuih uihuih ui hiuohohuoihoiuhuoih ouihouihuihuihuihuih uihuhrch kijji kmkldjfio iojdiiojiod iji iojiojiojio iojiiojioj jiod fijioj iijoi',
-                                      style: TextStyle(
-                                        color: primaryTextColor,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15.0,
-                                      ),
-                                      // overflow: TextOverflow.ellipsis,
-                                      // maxLines: 5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListView(
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        children: [
+                          UpComingEventCard(),
+                          UpComingEventCard(),
+                          UpComingEventCard(),
+                          UpComingEventCard(),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
+              // Container(
+              //   child: Column(
+              //     children: [
+              //       Padding(
+              //         padding: const EdgeInsets.only(
+              //           bottom: 5.0,
+              //           top: 5.0,
+              //         ),
+              //         child: Text(
+              //           'Upcoming Apostle\'s Itenary',
+              //           style: TextStyle(
+              //             fontSize: 20.0,
+              //             color: primaryTextColor,
+              //             fontWeight: FontWeight.w600,
+              //           ),
+              //         ),
+              //       ),
+              //       ListView(
+              //         physics: ClampingScrollPhysics(),
+              //         scrollDirection: Axis.vertical,
+              //         shrinkWrap: true,
+              //         children: <Widget>[
+              //           Padding(
+              //             padding: EdgeInsets.symmetric(
+              //               horizontal: 10,
+              //             ),
+              //             child: Container(
+              //               child: Card(
+              //                 elevation: 15.0,
+              //                 color: primaryColor,
+              //                 semanticContainer: true,
+              //                 clipBehavior: Clip.antiAliasWithSaveLayer,
+              //                 shape: RoundedRectangleBorder(
+              //                   side: BorderSide(
+              //                     color: primaryColorLight,
+              //                     width: 1,
+              //                   ),
+              //                   borderRadius: BorderRadius.circular(10),
+              //                 ),
+              //                 child: Column(
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: [
+              //                     Image.network(
+              //                       'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg',
+              //                       //height: 150,
+              //                       width: double.infinity,
+              //                       fit: BoxFit.cover,
+              //                     ),
+              //                     Padding(
+              //                       padding: const EdgeInsets.all(8.0),
+              //                       child: Text(
+              //                         'Learning from the persecuted Chukj nhnjknjkjkhihuihiuohuhuihuihouhuihuiohuih uihuih ui hiuohohuoihoiuhuoih ouihouihuihuihuihuih uihuhrch kijji kmkldjfio iojdiiojiod iji iojiojiojio iojiiojioj jiod fijioj iijoi',
+              //                         style: TextStyle(
+              //                           color: primaryTextColor,
+              //                           fontWeight: FontWeight.w500,
+              //                           fontSize: 15.0,
+              //                         ),
+              //                         // overflow: TextOverflow.ellipsis,
+              //                         // maxLines: 5,
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //           Padding(
+              //             padding: EdgeInsets.symmetric(
+              //               horizontal: 10,
+              //             ),
+              //             child: Container(
+              //               child: Card(
+              //                 elevation: 15.0,
+              //                 color: primaryColor,
+              //                 semanticContainer: true,
+              //                 clipBehavior: Clip.antiAliasWithSaveLayer,
+              //                 shape: RoundedRectangleBorder(
+              //                   side: BorderSide(
+              //                     color: primaryColorLight,
+              //                     width: 1,
+              //                   ),
+              //                   borderRadius: BorderRadius.circular(10),
+              //                 ),
+              //                 child: Column(
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: [
+              //                     Image.network(
+              //                       'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg',
+              //                       //height: 150,
+              //                       width: double.infinity,
+              //                       fit: BoxFit.cover,
+              //                     ),
+              //                     Padding(
+              //                       padding: const EdgeInsets.all(8.0),
+              //                       child: Text(
+              //                         'Learning from the persecuted Chukj nhnjknjkjkhihuihiuohuhuihuihouhuihuiohuih uihuih ui hiuohohuoihoiuhuoih ouihouihuihuihuihuih uihuhrch kijji kmkldjfio iojdiiojiod iji iojiojiojio iojiiojioj jiod fijioj iijoi',
+              //                         style: TextStyle(
+              //                           color: primaryTextColor,
+              //                           fontWeight: FontWeight.w500,
+              //                           fontSize: 15.0,
+              //                         ),
+              //                         // overflow: TextOverflow.ellipsis,
+              //                         // maxLines: 5,
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //           Padding(
+              //             padding: EdgeInsets.symmetric(
+              //               horizontal: 10,
+              //             ),
+              //             child: Container(
+              //               child: Card(
+              //                 elevation: 15.0,
+              //                 color: primaryColor,
+              //                 semanticContainer: true,
+              //                 clipBehavior: Clip.antiAliasWithSaveLayer,
+              //                 shape: RoundedRectangleBorder(
+              //                   side: BorderSide(
+              //                     color: primaryColorLight,
+              //                     width: 1,
+              //                   ),
+              //                   borderRadius: BorderRadius.circular(10),
+              //                 ),
+              //                 child: Column(
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: [
+              //                     Image.network(
+              //                       'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg',
+              //                       //height: 150,
+              //                       width: double.infinity,
+              //                       fit: BoxFit.cover,
+              //                     ),
+              //                     Padding(
+              //                       padding: const EdgeInsets.all(8.0),
+              //                       child: Text(
+              //                         'Learning from the persecuted Chukj nhnjknjkjkhihuihiuohuhuihuihouhuihuiohuih uihuih ui hiuohohuoihoiuhuoih ouihouihuihuihuihuih uihuhrch kijji kmkldjfio iojdiiojiod iji iojiojiojio iojiiojioj jiod fijioj iijoi',
+              //                         style: TextStyle(
+              //                           color: primaryTextColor,
+              //                           fontWeight: FontWeight.w500,
+              //                           fontSize: 15.0,
+              //                         ),
+              //                         // overflow: TextOverflow.ellipsis,
+              //                         // maxLines: 5,
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),

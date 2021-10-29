@@ -1,5 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:rcn/controller/slider_controller.dart';
+import 'package:rcn/model/slider.dart';
 
 class HomeBanner extends StatefulWidget {
   const HomeBanner({Key? key}) : super(key: key);
@@ -9,6 +13,10 @@ class HomeBanner extends StatefulWidget {
 }
 
 class _HomeBannerState extends State<HomeBanner> {
+  final sliderCont = SliderController().getXID;
+  var sliderList = <SliderModel>[];
+  List _imgs = [];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,24 +25,63 @@ class _HomeBannerState extends State<HomeBanner> {
         right: 15.0,
       ),
       child: SizedBox(
-          height: 200.0,
-          width: double.infinity,
-          child: Carousel(
-            images: [
-              NetworkImage(
-                  'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg'),
-              NetworkImage(
-                  'https://cdn-images-1.medium.com/max/2000/1*wnIEgP1gNMrK5gZU7QS0-A.jpeg'),
-              NetworkImage(
-                  'https://cdn-images-1.medium.com/max/2000/1*wnIEgP1gNMrK5gZU7QS0-A.jpeg'),
-            ],
-            dotSize: 4.0,
-            dotSpacing: 15.0,
-            dotColor: Colors.lightGreenAccent,
-            indicatorBgPadding: 5.0,
-            dotBgColor: Colors.purple.withOpacity(0.5),
-            borderRadius: true,
-          )),
+        height: 200.0,
+        width: double.infinity,
+        child: Obx(
+          () {
+            return loopSlider();
+          },
+        ),
+      ),
     );
+  }
+
+  loopSlider() {
+    _imgs.clear();
+    for (var i = 0; i < sliderCont.sliderList.length; i++) {
+      //print("Slider IMAGES == ${sliderCont.sliderList[i].image}");
+
+      // _imgs.add(NetworkImage(sliderCont.sliderList[i].image));
+
+      _imgs.add(
+        CachedNetworkImage(
+          imageUrl: sliderCont.sliderList[i].image,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          fadeInDuration: Duration(milliseconds: 500),
+          fadeInCurve: Curves.easeIn,
+          placeholder: (context, progressText) => Center(
+            child: CircularProgressIndicator(
+              value: 0.8,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.purple),
+            ),
+          ),
+        ),
+      );
+    }
+    //print("Hello ${_imgs}");
+    if (_imgs.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(
+          value: 0.8,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.purple),
+        ),
+      );
+    }
+    return Carousel(
+      images: _imgs,
+      dotSize: 5.0,
+      dotSpacing: 10.0,
+      dotColor: Colors.lightGreenAccent,
+      indicatorBgPadding: 5.0,
+      dotBgColor: Colors.purple.withOpacity(0.5),
+      borderRadius: true,
+      radius: Radius.circular(0),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 }

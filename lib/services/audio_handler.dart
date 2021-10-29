@@ -16,8 +16,53 @@ Future<AudioHandler> initAudioService() async {
 
 class MyAudioHandler extends BaseAudioHandler {
   final _player = AudioPlayer();
-
-  final _playlist = ConcatenatingAudioSource(children: []);
+  static int _nextMediaId = 0;
+  final _playlist = ConcatenatingAudioSource(children: [
+    ClippingAudioSource(
+      start: Duration(seconds: 60),
+      end: Duration(seconds: 90),
+      child: AudioSource.uri(Uri.parse(
+          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")),
+      tag: MediaItem(
+        id: '${_nextMediaId++}',
+        album: "Science Friday",
+        title: "A Salute To Head-Scratching Science (30 seconds)",
+        artUri: Uri.parse(
+            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+      ),
+    ),
+    AudioSource.uri(
+      Uri.parse(
+          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
+      tag: MediaItem(
+        id: '${_nextMediaId++}',
+        album: "Science Friday",
+        title: "A Salute To Head-Scratching Science",
+        artUri: Uri.parse(
+            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+      ),
+    ),
+    AudioSource.uri(
+      Uri.parse("https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
+      tag: MediaItem(
+        id: '${_nextMediaId++}',
+        album: "Science Friday",
+        title: "From Cat Rheology To Operatic Incompetence",
+        artUri: Uri.parse(
+            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+      ),
+    ),
+    AudioSource.uri(
+      Uri.parse("asset:///audio/nature.mp3"),
+      tag: MediaItem(
+        id: '${_nextMediaId++}',
+        album: "Public Domain",
+        title: "Nature Sounds",
+        artUri: Uri.parse(
+            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+      ),
+    ),
+  ]);
 
   MyAudioHandler() {
     _loadEmptyPlaylist();
@@ -29,7 +74,6 @@ class MyAudioHandler extends BaseAudioHandler {
 
   Future<void> _loadEmptyPlaylist() async {
     try {
-      print('who call first');
       await _player.setAudioSource(_playlist);
     } catch (e) {
       print("Error: $e");
@@ -105,12 +149,10 @@ class MyAudioHandler extends BaseAudioHandler {
     _player.sequenceStateStream.listen((SequenceState? sequenceState) {
       final sequence = sequenceState?.effectiveSequence;
       if (sequence == null || sequence.isEmpty) {
-        print('it is empty');
         return;
       } else {
         final items = sequence.map((source) => source.tag as MediaItem);
         queue.add(items.toList());
-        print('Sequence ${sequenceState.toString()}');
       }
     });
   }
@@ -157,13 +199,11 @@ class MyAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> play() {
-    print('The Play Button Clicked');
     return _player.play();
   }
 
   @override
   Future<void> pause() {
-    print('The Play Button Clicked');
     return _player.pause();
   }
 

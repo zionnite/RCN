@@ -26,19 +26,67 @@ class _MessagePlayerState extends State<MessagePlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            CurrentSongTitle(),
-            Playlist(),
-            AddRemoveSongButtons(),
-            AudioProgressBar(),
-            AudioControlButtons(),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                expandedHeight: 300.0,
+                floating: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: CurrentSongTitle(),
+                  background: CurrentSongImage(),
+                ),
+              ),
+            ];
+          },
+          body: Column(
+            children: [
+              // AddRemoveSongButtons(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      AudioProgressBar(),
+                      AudioControlButtons(),
+                      Expanded(child: Playlist()),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+void itemlist() {
+  AddRemoveSongButtons();
+  CurrentSongTitle();
+  AudioProgressBar();
+  AudioControlButtons();
+  Playlist();
+}
+
+class CurrentSongImage extends StatelessWidget {
+  const CurrentSongImage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final pageManager = getIt<PageManager>();
+    return ValueListenableBuilder<String>(
+      valueListenable: pageManager.currentSongImageNotifier,
+      builder: (_, imageLink, __) {
+        return Image.network(
+          '${imageLink}',
+          fit: BoxFit.cover,
+        );
+      },
     );
   }
 }
@@ -53,7 +101,14 @@ class CurrentSongTitle extends StatelessWidget {
       builder: (_, title, __) {
         return Padding(
           padding: const EdgeInsets.only(top: 8.0),
-          child: Text(title, style: TextStyle(fontSize: 40)),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+          ),
         );
       },
     );
@@ -65,20 +120,21 @@ class Playlist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pageManager = getIt<PageManager>();
-    return Expanded(
-      child: ValueListenableBuilder<List<String>>(
-        valueListenable: pageManager.playlistNotifier,
-        builder: (context, playlistTitles, _) {
-          return ListView.builder(
-            itemCount: playlistTitles.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('${playlistTitles[index]}'),
-              );
-            },
-          );
-        },
-      ),
+    return ValueListenableBuilder<List<String>>(
+      valueListenable: pageManager.playlistNotifier,
+      builder: (context, playlistTitles, _) {
+        return ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemCount: playlistTitles.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text('${playlistTitles[index]}'),
+            );
+          },
+        );
+      },
     );
   }
 }

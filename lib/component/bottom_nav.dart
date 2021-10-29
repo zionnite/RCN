@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rcn/screens/event_page.dart';
+import 'package:rcn/screens/LiveMessage.dart';
+import 'package:rcn/screens/give_n_partner.dart';
 import 'package:rcn/screens/home_page.dart';
-import 'package:rcn/screens/message_player.dart';
 import 'package:rcn/util.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -17,10 +17,9 @@ class _BottomNavState extends State<BottomNav> {
 
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    EventPage(),
-    MessagePlayer(),
-    EventPage(),
-    // EventPage(),
+    LiveMessage(),
+    GiveAndPartner(),
+    //MessagePlayer(),
   ];
 
   @override
@@ -41,38 +40,38 @@ class _BottomNavState extends State<BottomNav> {
             selectedColor: bgColorWhite,
             unselectedColor: primaryColorLight,
           ),
+          SalomonBottomBarItem(
+            icon: Icon(Icons.video_call_sharp),
+            title: Text("Live"),
+            selectedColor: bgColorWhite,
+            unselectedColor: primaryColorLight,
+          ),
 
           /// Likes
-          SalomonBottomBarItem(
-            icon: Icon(Icons.favorite_border),
-            title: Text("Give"),
-            selectedColor: bgColorWhite,
-            unselectedColor: primaryColorLight,
-          ),
-
-          /// Search
-          SalomonBottomBarItem(
-            icon: Icon(Icons.music_note_outlined),
-            title: Text("Message"),
-            selectedColor: bgColorWhite,
-            unselectedColor: primaryColorLight,
-          ),
-
-          /// Profile
-          SalomonBottomBarItem(
-            icon: Icon(Icons.menu_book_sharp),
-            title: Text("Books"),
-            selectedColor: bgColorWhite,
-            unselectedColor: primaryColorLight,
-          ),
-
-          /// Profile
           // SalomonBottomBarItem(
-          //   icon: Icon(Icons.video_call_sharp),
-          //   title: Text("Live"),
+          //   icon: Icon(Icons.favorite_border),
+          //   title: Text("Give"),
           //   selectedColor: bgColorWhite,
           //   unselectedColor: primaryColorLight,
           // ),
+
+          /// Search
+          // SalomonBottomBarItem(
+          //   icon: Icon(Icons.music_note_outlined),
+          //   title: Text("Message"),
+          //   selectedColor: bgColorWhite,
+          //   unselectedColor: primaryColorLight,
+          // ),
+
+          /// Profile
+          SalomonBottomBarItem(
+            icon: Icon(Icons.menu_sharp),
+            title: Text("Menu"),
+            selectedColor: bgColorWhite,
+            unselectedColor: primaryColorLight,
+          ),
+
+          /// Profile
         ],
       ),
     );

@@ -10,6 +10,7 @@ import 'package:rxdart/rxdart.dart';
 class PageManager {
   // Listeners: Updates going to the UI
   final currentSongTitleNotifier = ValueNotifier<String>('');
+  final currentSongImageNotifier = ValueNotifier<String>('');
   final playlistNotifier = ValueNotifier<List<String>>([]);
   final progressNotifier = ProgressNotifier();
   final repeatButtonNotifier = RepeatButtonNotifier();
@@ -32,7 +33,6 @@ class PageManager {
   }
 
   Future<void> _loadPlaylist() async {
-    print('who call first - playlist');
     final songRepository = getIt<PlaylistRepository>();
     final playlist = await songRepository.fetchInitialPlaylist();
 
@@ -53,11 +53,10 @@ class PageManager {
       if (playlist.isEmpty) {
         playlistNotifier.value = [];
         currentSongTitleNotifier.value = '';
-        print('Playlist is empty');
+        currentSongImageNotifier.value = '';
       } else {
         final newList = playlist.map((item) => item.title).toList();
         playlistNotifier.value = newList;
-        print('player list is not empty');
       }
       _updateSkipButtons();
     });
@@ -115,8 +114,13 @@ class PageManager {
   }
 
   void _listenToChangesInSong() {
+    var artistUrl;
     _audioHandler.mediaItem.listen((mediaItem) {
       currentSongTitleNotifier.value = mediaItem?.title ?? '';
+      artistUrl = mediaItem?.artUri;
+      if (artistUrl == null) {
+        currentSongImageNotifier.value = artistUrl ?? '';
+      }
       _updateSkipButtons();
     });
   }
@@ -134,12 +138,10 @@ class PageManager {
   }
 
   void play() {
-    print('calling Playing button');
     _audioHandler.play();
   }
 
   void pause() {
-    print('calling Pause Button');
     _audioHandler.pause();
   }
 
