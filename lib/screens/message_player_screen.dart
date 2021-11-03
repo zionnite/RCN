@@ -1,5 +1,6 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:rcn/component/page_manager.dart';
 import 'package:rcn/notifiers/play_button_notifier.dart';
 import 'package:rcn/notifiers/progress_notifier.dart';
@@ -7,6 +8,18 @@ import 'package:rcn/notifiers/repeat_button_notifier.dart';
 import 'package:rcn/services/service_locator.dart';
 
 class MessagePlayer extends StatefulWidget {
+  MessagePlayer(
+      {required this.id,
+      required this.title,
+      required this.album,
+      required this.url,
+      required this.artUri});
+  String id;
+  String title;
+  String album;
+  String url;
+  String artUri;
+
   @override
   _MessagePlayerState createState() => _MessagePlayerState();
 }
@@ -16,6 +29,13 @@ class _MessagePlayerState extends State<MessagePlayer> {
   void initState() {
     super.initState();
     // getIt<PageManager>().init();
+    addMessageToPlayer(
+      id: widget.id,
+      title: widget.title,
+      album: widget.album,
+      url: widget.url,
+      artUri: widget.artUri,
+    );
   }
 
   @override
@@ -26,40 +46,151 @@ class _MessagePlayerState extends State<MessagePlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                expandedHeight: 300.0,
-                floating: false,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
-                  title: CurrentSongTitle(),
-                  background: CurrentSongImage(),
+    // return Scaffold(
+    //   body: NestedScrollView(
+    //     headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+    //       return <Widget>[
+    //         SliverAppBar(
+    //           expandedHeight: 600.0,
+    //           floating: false,
+    //           pinned: true,
+    //           flexibleSpace: FlexibleSpaceBar(
+    //             centerTitle: true,
+    //             title: CurrentSongTitle(),
+    //             background: CurrentSongImage(),
+    //           ),
+    //         ),
+    //       ];
+    //     },
+    //     body: Column(
+    //       children: [
+    //         // AddRemoveSongButtons(),
+    //         Expanded(
+    //           child: Padding(
+    //             padding: const EdgeInsets.all(20.0),
+    //             child: Column(
+    //               children: [
+    //                 AudioProgressBar(),
+    //                 AudioControlButtons(),
+    //                 Expanded(
+    //                   child: Playlist(),
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                CurrentSongImage(),
+                Positioned(
+                  top: 30,
+                  child: IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: Icon(
+                      Icons.chevron_left_rounded,
+                      color: Colors.white,
+                      size: 45,
+                    ),
+                  ),
                 ),
-              ),
-            ];
-          },
-          body: Column(
-            children: [
-              // AddRemoveSongButtons(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                Positioned(
+                  bottom: 40,
                   child: Column(
                     children: [
-                      AudioProgressBar(),
-                      AudioControlButtons(),
-                      Expanded(child: Playlist()),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: CurrentSongTitle(),
+                      ),
                     ],
                   ),
                 ),
+              ],
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: AudioProgressBar(),
+            ),
+            Container(
+              child: AudioControlButtons(),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      print('Download Tap');
+                    },
+                    child: Card(
+                      color: Colors.deepOrange,
+                      elevation: 2,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Download',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.download,
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      print('Playlist Tap');
+                    },
+                    child: Card(
+                      color: Colors.green,
+                      elevation: 2,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Add to Playlist',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.audiotrack,
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
@@ -69,6 +200,7 @@ class _MessagePlayerState extends State<MessagePlayer> {
 void itemlist() {
   AddRemoveSongButtons();
   CurrentSongTitle();
+  CurrentSongImage();
   AudioProgressBar();
   AudioControlButtons();
   Playlist();
@@ -82,8 +214,20 @@ class CurrentSongImage extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: pageManager.currentSongImageNotifier,
       builder: (_, imageLink, __) {
+        if (imageLink.isEmpty)
+          return Image.asset(
+            'assets/images/apostle.jpeg',
+            fit: BoxFit.cover,
+          );
+        if (imageLink == null)
+          return Image.asset(
+            'assets/images/apostle.jpeg',
+            fit: BoxFit.cover,
+          );
         return Image.network(
           '${imageLink}',
+          width: double.infinity,
+          height: 600,
           fit: BoxFit.cover,
         );
       },
@@ -105,6 +249,7 @@ class CurrentSongTitle extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -129,14 +274,42 @@ class Playlist extends StatelessWidget {
           physics: ClampingScrollPhysics(),
           itemCount: playlistTitles.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text('${playlistTitles[index]}'),
+            return Column(
+              children: [
+                ListTile(
+                  //leading: CurrentSongImage(),
+                  title: Text(
+                    '${playlistTitles[index]}',
+                  ),
+                  //trailing: AddRemoveSongButtons(),
+                ),
+                SizedBox(
+                  height: 5,
+                )
+              ],
             );
           },
         );
       },
     );
   }
+}
+
+addMessageToPlayer({
+  required String id,
+  required String title,
+  required String album,
+  required String url,
+  required String artUri,
+}) {
+  final pageManager = getIt<PageManager>();
+  pageManager.addMessageToPlayer(
+    id: id,
+    title: title,
+    album: album,
+    url: url,
+    artUri: artUri,
+  );
 }
 
 class AddRemoveSongButtons extends StatelessWidget {
@@ -271,10 +444,12 @@ class PlayButton extends StatelessWidget {
               onPressed: pageManager.play,
             );
           case ButtonState.playing:
-            return IconButton(
-              icon: Icon(Icons.pause),
-              iconSize: 32.0,
-              onPressed: pageManager.pause,
+            return Container(
+              child: IconButton(
+                icon: Icon(Icons.pause),
+                iconSize: 32.0,
+                onPressed: pageManager.pause,
+              ),
             );
         }
       },

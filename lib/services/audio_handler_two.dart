@@ -1,6 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:rcn/controller/player_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 Future<AudioHandler> initAudioService() async {
@@ -16,71 +15,51 @@ Future<AudioHandler> initAudioService() async {
 }
 
 class MyAudioHandler extends BaseAudioHandler {
-  final playerCont = PlayerController().getXID;
-
   final _player = AudioPlayer();
   static int _nextMediaId = 0;
   final _playlist = ConcatenatingAudioSource(
     children: [
-      // ClippingAudioSource(
-      //   start: Duration(seconds: 60),
-      //   end: Duration(seconds: 90),
-      //   child: AudioSource.uri(Uri.parse(
-      //       "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")),
-      //   tag: MediaItem(
-      //     id: '${_nextMediaId++}',
-      //     album: "Science Friday",
-      //     title: "A Salute To Head-Scratching Science (30 seconds)",
-      //     artUri: Uri.parse(
-      //         "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-      //   ),
-      // ),
-      // AudioSource.uri(
-      //   Uri.parse(
-      //     "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3",
-      //   ),
-      //   tag: MediaItem(
-      //     id: '${_nextMediaId++}',
-      //     album: "Science Friday",
-      //     title: "A Salute To Head-Scratching Science",
-      //     artUri: Uri.parse(
-      //         "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-      //   ),
-      // ),
-      // AudioSource.uri(
-      //   Uri.parse(
-      //       "https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
-      //   tag: MediaItem(
-      //     id: '${_nextMediaId++}',
-      //     album: "Science Friday",
-      //     title: "From Cat Rheology To Operatic Incompetence",
-      //     artUri: Uri.parse(
-      //         "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-      //   ),
-      // ),
+      ClippingAudioSource(
+        start: Duration(seconds: 60),
+        end: Duration(seconds: 90),
+        child: AudioSource.uri(Uri.parse(
+            "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")),
+        tag: MediaItem(
+          id: '${_nextMediaId++}',
+          album: "Science Friday",
+          title: "A Salute To Head-Scratching Science (30 seconds)",
+          artUri: Uri.parse(
+              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+        ),
+      ),
+      AudioSource.uri(
+        Uri.parse(
+          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3",
+        ),
+        tag: MediaItem(
+          id: '${_nextMediaId++}',
+          album: "Science Friday",
+          title: "A Salute To Head-Scratching Science",
+          artUri: Uri.parse(
+              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+        ),
+      ),
+      AudioSource.uri(
+        Uri.parse(
+            "https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
+        tag: MediaItem(
+          id: '${_nextMediaId++}',
+          album: "Science Friday",
+          title: "From Cat Rheology To Operatic Incompetence",
+          artUri: Uri.parse(
+              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+        ),
+      ),
     ],
   );
 
-  loopPlayerListApi() {
-    for (var i = 0; i < playerCont.playerList.length; i++) {
-      return AudioSource.uri(
-        Uri.parse(
-          "${playerCont.playerList[i].audioUrl}",
-        ),
-        tag: MediaItem(
-          id: '${playerCont.playerList[i].id}',
-          album: "${playerCont.playerList[i].album}",
-          title: "${playerCont.playerList[i].title}",
-          artUri: Uri.parse(
-            "${playerCont.playerList[i].artUri}",
-          ),
-        ),
-      );
-    }
-  }
-
   MyAudioHandler() {
-    //_loadEmptyPlaylist();
+    _loadEmptyPlaylist();
     _notifyAudioHandlerAboutPlaybackEvents();
     _listenForDurationChanges();
     _listenForCurrentSongIndexChanges();
@@ -186,16 +165,13 @@ class MyAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> addQueueItem(MediaItem mediaItem) async {
-    removeAllQueueItem();
     // manage Just Audio
     final audioSource = _createAudioSource(mediaItem);
     _playlist.add(audioSource);
 
     // notify system
-    final newQueue = queue.value!..add(mediaItem); /* did this*/
-    queue.add(newQueue); /*did this*/
-
-    _player.setAudioSource(_playlist);
+    final newQueue = queue.value!..add(mediaItem);
+    queue.add(newQueue);
   }
 
   UriAudioSource _createAudioSource(MediaItem mediaItem) {
@@ -212,16 +188,6 @@ class MyAudioHandler extends BaseAudioHandler {
 
     // notify system
     final newQueue = queue.value!..removeAt(index);
-    queue.add(newQueue);
-  }
-
-  @override
-  Future<void> removeAllQueueItem() async {
-    // manage Just Audio
-    _playlist.clear();
-
-    // notify system
-    final newQueue = queue.value!..clear();
     queue.add(newQueue);
   }
 

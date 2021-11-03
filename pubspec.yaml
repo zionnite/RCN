@@ -51,8 +51,17 @@ dependencies:
   permission_handler: ^8.1.4+2
   device_info_plus: ^2.1.0
 #  android_path_provider: ^0.2.1
+
   get: ^4.3.8
   cached_network_image:
+
+
+  #YouTube Dependency
+  youtube_player_flutter: ^8.0.0
+  flutter_youtube_downloader: ^0.0.5
+
+  animated_text_kit: ^4.2.1
+  google_fonts: ^2.1.0
 
 
 

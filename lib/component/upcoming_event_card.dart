@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
+import 'package:rcn/screens/upcoming_itenary_screen.dart';
 import 'package:rcn/util.dart';
 
 class UpComingEventCard extends StatefulWidget {
@@ -13,6 +15,7 @@ class _UpComingEventCardState extends State<UpComingEventCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 2.0,
       child: Container(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,19 +41,27 @@ class _UpComingEventCardState extends State<UpComingEventCard> {
             ),
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: 5.0,
+                  ),
                   Text(
-                    'Apostle Invasion - Uganda',
+                    'Apostolic Invasion - Uganda',
                     style: TextStyle(
-                      fontSize: 24.0,
+                      fontSize: 15.0,
                       color: textColorBlack,
+                      fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.left,
                   ),
                   SizedBox(
                     height: 5.0,
                   ),
                   Text(
                     'Apostle will  becoming to Uganda under mandate of Heaven, save the date and dont miss it for anything',
+                    maxLines: 3,
                   ),
                   Row(
                     children: [
@@ -59,14 +70,17 @@ class _UpComingEventCardState extends State<UpComingEventCard> {
                             vertical: 10.0, horizontal: 0),
                         child: InkWell(
                           onTap: () {
-                            print('Book Event...');
+                            Get.to(
+                              UpcomingItenaryScreen(),
+                            );
                           },
                           child: Card(
-                            elevation: 8,
+                            elevation: 4,
+                            color: Colors.white,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Book Event',
+                                'Read More',
                                 style: TextStyle(
                                   color: textColorBlack,
                                   fontWeight: FontWeight.w700,

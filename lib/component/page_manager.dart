@@ -23,7 +23,7 @@ class PageManager {
 
   // Events: Calls coming from the UI
   void init() async {
-    await _loadPlaylist();
+    //await _loadPlaylist();
     _listenToPlaybackState();
     _listenToCurrentPosition();
     _listenToBufferedPosition();
@@ -115,14 +115,15 @@ class PageManager {
 
   void _listenToChangesInSong() {
     var artistUrl;
-    _audioHandler.mediaItem.listen((mediaItem) {
-      currentSongTitleNotifier.value = mediaItem?.title ?? '';
-      artistUrl = mediaItem?.artUri;
-      if (artistUrl == null) {
-        currentSongImageNotifier.value = artistUrl ?? '';
-      }
-      _updateSkipButtons();
-    });
+    _audioHandler.mediaItem.listen(
+      (mediaItem) {
+        currentSongTitleNotifier.value = mediaItem?.title ?? '';
+        artistUrl = mediaItem?.artUri;
+        currentSongImageNotifier.value = artistUrl.toString();
+
+        _updateSkipButtons();
+      },
+    );
   }
 
   void _updateSkipButtons() {
@@ -181,10 +182,38 @@ class PageManager {
     final song = await songRepository.fetchAnotherSong();
     final mediaItem = MediaItem(
       id: song['id'] ?? '',
-      album: song['album'] ?? '',
       title: song['title'] ?? '',
-      extras: {'url': song['url']},
+      album: song['album'] ?? '',
+      extras: {
+        'url': song['url'],
+        'artUri': song['artUri'],
+      },
     );
+    _audioHandler.addQueueItem(mediaItem);
+  }
+
+  addMessageToPlayer(
+      {required String id,
+      required String title,
+      required String album,
+      required String url,
+      required String artUri}) {
+    // print('ID came ${id}');
+    // print('TITLE came ${title}');
+    // print('ALBUM came ${album}');
+    // print('URL came ${url}');
+    // print('ARTURL came ${artUri}');
+
+    final mediaItem = MediaItem(
+      id: id,
+      title: title,
+      album: album,
+      artUri: Uri.parse(artUri),
+      extras: {
+        'url': url,
+      },
+    );
+
     _audioHandler.addQueueItem(mediaItem);
   }
 

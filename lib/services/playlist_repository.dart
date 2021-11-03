@@ -27,6 +27,8 @@ class DemoPlaylist extends PlaylistRepository {
       'album': 'SoundHelix',
       'url':
           'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-$_songIndex.mp3',
+      'artUri':
+          'https://www.ups.com/assets/resources/images/m4-international-shipping-services.jpg',
     };
   }
 }

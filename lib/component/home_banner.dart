@@ -20,12 +20,12 @@ class _HomeBannerState extends State<HomeBanner> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(
-        left: 15.0,
-        right: 15.0,
-      ),
+      // margin: EdgeInsets.only(
+      //   left: 15.0,
+      //   right: 15.0,
+      // ),
       child: SizedBox(
-        height: 200.0,
+        height: 250.0,
         width: double.infinity,
         child: Obx(
           () {
@@ -39,10 +39,6 @@ class _HomeBannerState extends State<HomeBanner> {
   loopSlider() {
     _imgs.clear();
     for (var i = 0; i < sliderCont.sliderList.length; i++) {
-      //print("Slider IMAGES == ${sliderCont.sliderList[i].image}");
-
-      // _imgs.add(NetworkImage(sliderCont.sliderList[i].image));
-
       _imgs.add(
         CachedNetworkImage(
           imageUrl: sliderCont.sliderList[i].image,
@@ -59,7 +55,7 @@ class _HomeBannerState extends State<HomeBanner> {
         ),
       );
     }
-    //print("Hello ${_imgs}");
+
     if (_imgs.isEmpty) {
       return Center(
         child: CircularProgressIndicator(

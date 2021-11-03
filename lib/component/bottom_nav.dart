@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rcn/screens/LiveMessage.dart';
-import 'package:rcn/screens/give_n_partner.dart';
-import 'package:rcn/screens/home_page.dart';
-import 'package:rcn/util.dart';
+import 'package:rcn/screens/app_menu_option_screen.dart';
+import 'package:rcn/screens/home_page_screen.dart';
+import 'package:rcn/screens/live_meessage_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class BottomNav extends StatefulWidget {
@@ -18,14 +17,14 @@ class _BottomNavState extends State<BottomNav> {
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     LiveMessage(),
-    GiveAndPartner(),
+    AppMenuOption(),
     //MessagePlayer(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColorDark,
+      // backgroundColor: primaryColorDark,
       body: Container(
         child: _widgetOptions.elementAt(_currentIndex),
       ),
@@ -35,16 +34,18 @@ class _BottomNavState extends State<BottomNav> {
         items: [
           /// Home
           SalomonBottomBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(
+              Icons.home,
+            ),
             title: Text("Home"),
-            selectedColor: bgColorWhite,
-            unselectedColor: primaryColorLight,
+            selectedColor: Colors.redAccent,
+            unselectedColor: Colors.black26,
           ),
           SalomonBottomBarItem(
             icon: Icon(Icons.video_call_sharp),
             title: Text("Live"),
-            selectedColor: bgColorWhite,
-            unselectedColor: primaryColorLight,
+            selectedColor: Colors.redAccent,
+            unselectedColor: Colors.black26,
           ),
 
           /// Likes
@@ -66,9 +67,11 @@ class _BottomNavState extends State<BottomNav> {
           /// Profile
           SalomonBottomBarItem(
             icon: Icon(Icons.menu_sharp),
-            title: Text("Menu"),
-            selectedColor: bgColorWhite,
-            unselectedColor: primaryColorLight,
+            title: Text(
+              "Menu",
+            ),
+            selectedColor: Colors.redAccent,
+            unselectedColor: Colors.black54,
           ),
 
           /// Profile
