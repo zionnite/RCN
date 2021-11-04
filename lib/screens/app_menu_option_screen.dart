@@ -7,7 +7,7 @@ import 'package:rcn/screens/about_rcn.dart';
 import 'package:rcn/screens/announcement_screen.dart';
 import 'package:rcn/screens/give_n_partner_screen.dart';
 import 'package:rcn/screens/itestify_screen.dart';
-import 'package:rcn/screens/message_player_screen.dart';
+import 'package:rcn/screens/list_messages_screen.dart';
 import 'package:rcn/screens/nearest_rcn_screen.dart';
 import 'package:rcn/screens/profile_screen.dart';
 import 'package:rcn/screens/speak_to_someone_screen.dart';
@@ -44,17 +44,8 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                     children: [
                       InkWell(
                         onTap: () {
-                          //playerCont.setPlayerList();
                           Get.to(
-                            () => MessagePlayer(
-                              id: '1',
-                              title: 'January 2021 – Prayer and Fasting',
-                              album: 'Ministration',
-                              url:
-                                  'https://rcnsermons.org/2021%20updload/01%20January%202021%20-%20Prayer%20And%20Fasting/08%20Inner%20Knowledge%20Of%20Reckoning%20-%20%28Apst.%20Arome%20Osayi%29%20-%20Wed.%2014th%202021.mp3',
-                              artUri:
-                                  'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-                            ),
+                            () => ListMessagesScreen(),
                           );
                         },
                         child: ListTile(
@@ -128,7 +119,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                       InkWell(
                         onTap: () {
                           Get.to(
-                            GiveAndPartner(),
+                            () => GiveAndPartner(),
                           );
                         },
                         child: ListTile(
@@ -165,7 +156,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                       InkWell(
                         onTap: () {
                           Get.to(
-                            ItestifyScreen(),
+                            () => ItestifyScreen(),
                           );
                         },
                         child: ListTile(
@@ -202,7 +193,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                       InkWell(
                         onTap: () {
                           Get.to(
-                            SpeakToSomeoneScreen(),
+                            () => SpeakToSomeoneScreen(),
                           );
                         },
                         child: ListTile(
@@ -239,7 +230,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                       InkWell(
                         onTap: () {
                           Get.to(
-                            AnnouncementScreen(),
+                            () => AnnouncementScreen(),
                           );
                         },
                         child: ListTile(
@@ -276,7 +267,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                       InkWell(
                         onTap: () {
                           Get.to(
-                            NearestRcnScreen(),
+                            () => NearestRcnScreen(),
                           );
                         },
                         child: ListTile(
@@ -313,7 +304,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                       InkWell(
                         onTap: () {
                           Get.to(
-                            AboutRcn(),
+                            () => AboutRcn(),
                           );
                         },
                         child: ListTile(
@@ -350,7 +341,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                       InkWell(
                         onTap: () {
                           Get.to(
-                            ProfileScreen(),
+                            () => ProfileScreen(),
                           );
                         },
                         child: ListTile(

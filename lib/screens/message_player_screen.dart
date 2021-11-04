@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -91,6 +93,7 @@ class _MessagePlayerState extends State<MessagePlayer> {
             Stack(
               children: [
                 CurrentSongImage(),
+
                 Positioned(
                   top: 30,
                   child: IconButton(
@@ -99,22 +102,22 @@ class _MessagePlayerState extends State<MessagePlayer> {
                     },
                     icon: Icon(
                       Icons.chevron_left_rounded,
-                      color: Colors.white,
+                      color: Colors.deepOrange,
                       size: 45,
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: 40,
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: CurrentSongTitle(),
-                      ),
-                    ],
-                  ),
-                ),
+                // Positioned(
+                //   bottom: 40,
+                //   child: Column(
+                //     children: [
+                //       Container(
+                //         padding: EdgeInsets.symmetric(horizontal: 10),
+                //         child: CurrentSongTitle(),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
             Container(
@@ -218,17 +221,43 @@ class CurrentSongImage extends StatelessWidget {
           return Image.asset(
             'assets/images/apostle.jpeg',
             fit: BoxFit.cover,
+            width: double.infinity,
+            height: 600,
           );
         if (imageLink == null)
           return Image.asset(
             'assets/images/apostle.jpeg',
             fit: BoxFit.cover,
+            width: double.infinity,
+            height: 600,
           );
-        return Image.network(
-          '${imageLink}',
-          width: double.infinity,
+        return SizedBox(
           height: 600,
-          fit: BoxFit.cover,
+          child: Stack(
+            children: [
+              Image.network(
+                '${imageLink}',
+                width: double.infinity,
+                height: 600,
+                fit: BoxFit.cover,
+              ),
+              ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    color: Colors.grey.withOpacity(0),
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        bottom: 15,
+                      ),
+                      child: CurrentSongTitle(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -250,9 +279,11 @@ class CurrentSongTitle extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
+              color: Colors.yellowAccent,
             ),
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         );
       },
