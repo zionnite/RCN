@@ -41,7 +41,7 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
     _controller = YoutubePlayerController(
       initialVideoId: videoId,
       flags: YoutubePlayerFlags(
-        isLive: true,
+        //isLive: true,
         enableCaption: true,
         forceHD: true,
       ),
@@ -142,19 +142,7 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
                 children: [
                   _space,
                   SizedBox(
-                    height: 100,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'You can give your Offering or pay your Tithe as Ministration is going on',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                    height: 10,
                   ),
                   InkWell(
                     onTap: () {},
@@ -166,16 +154,16 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
                         ),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      color: bgColorWhite,
+                      color: Colors.red,
                       elevation: 3,
                       child: Container(
                         width: double.infinity,
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),
                           child: Text(
-                            'OFFERING',
+                            'Download',
                             style: TextStyle(
-                              color: textColorBlack,
+                              color: Colors.white,
                               fontSize: 20.0,
                               fontWeight: FontWeight.w500,
                             ),
@@ -185,18 +173,6 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'OR',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                   InkWell(
                     onTap: () {},
                     child: Card(
@@ -207,16 +183,16 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
                         ),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      color: bgColorWhite,
+                      color: Colors.green,
                       elevation: 3,
                       child: Container(
                         width: double.infinity,
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),
                           child: Text(
-                            'TITHE',
+                            'Add To Playlist',
                             style: TextStyle(
-                              color: textColorBlack,
+                              color: Colors.white,
                               fontSize: 20.0,
                               fontWeight: FontWeight.w500,
                             ),

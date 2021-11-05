@@ -19,7 +19,7 @@ import 'package:rcn/screens/speak_to_someone_screen.dart';
 import 'package:rcn/screens/upcoming_itenary_screen.dart';
 import 'package:rcn/services/service_locator.dart';
 
-import 'screens/about_rcn.dart';
+import 'screens/about_rcn_screen.dart';
 import 'screens/give_n_partner_screen.dart';
 import 'screens/itestify_screen.dart';
 import 'screens/video_message_screen.dart';

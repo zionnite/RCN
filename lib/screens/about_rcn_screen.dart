@@ -10,6 +10,16 @@ class AboutRcn extends StatefulWidget {
 class _AboutRcnState extends State<AboutRcn> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.deepOrange,
+        title: Text('About RCN'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [],
+        ),
+      ),
+    );
   }
 }

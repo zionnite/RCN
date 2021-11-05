@@ -3,7 +3,6 @@ import 'package:get/route_manager.dart';
 import 'package:rcn/component/app_title_widget.dart';
 import 'package:rcn/controller/player_controller.dart';
 import 'package:rcn/controller/slider_controller.dart';
-import 'package:rcn/screens/about_rcn.dart';
 import 'package:rcn/screens/announcement_screen.dart';
 import 'package:rcn/screens/give_n_partner_screen.dart';
 import 'package:rcn/screens/itestify_screen.dart';
@@ -301,43 +300,43 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                           ),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          Get.to(
-                            () => AboutRcn(),
-                          );
-                        },
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.file_copy_outlined,
-                            color: Colors.redAccent,
-                          ),
-                          title: Text(
-                            'About RCN',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            'Read about RCN mission and vision statement',
-                          ),
-                          trailing: Icon(
-                            Icons.chevron_right_outlined,
-                            color: Colors.redAccent,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 70.0,
-                          ),
-                          child: Divider(
-                            color: Colors.deepOrange,
-                          ),
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     Get.to(
+                      //       () => AboutRcn(),
+                      //     );
+                      //   },
+                      //   child: ListTile(
+                      //     leading: Icon(
+                      //       Icons.file_copy_outlined,
+                      //       color: Colors.redAccent,
+                      //     ),
+                      //     title: Text(
+                      //       'About RCN',
+                      //       style: TextStyle(
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //     ),
+                      //     subtitle: Text(
+                      //       'Read about RCN mission and vision statement',
+                      //     ),
+                      //     trailing: Icon(
+                      //       Icons.chevron_right_outlined,
+                      //       color: Colors.redAccent,
+                      //     ),
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 5,
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.symmetric(
+                      //       horizontal: 70.0,
+                      //     ),
+                      //     child: Divider(
+                      //       color: Colors.deepOrange,
+                      //     ),
+                      //   ),
+                      // ),
                       InkWell(
                         onTap: () {
                           Get.to(

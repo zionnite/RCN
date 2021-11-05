@@ -52,7 +52,7 @@ class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
                   filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                   child: Container(
                     alignment: Alignment.center,
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.black.withOpacity(0.4),
                     child: IconButton(
                       icon: Icon(
                         Icons.play_circle_filled_sharp,
