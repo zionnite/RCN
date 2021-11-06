@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rcn/component/itestify_widget.dart';
+import 'package:rcn/widget/itestify_widget.dart';
 import 'package:speed_dial_fab/speed_dial_fab.dart';
 
 class ItestifyScreen extends StatefulWidget {

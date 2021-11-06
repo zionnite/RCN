@@ -2,6 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:rcn/screens/your_audio_playlist_screen.dart';
+import 'package:rcn/screens/your_tithe_n_offering_insight.dart';
+import 'package:rcn/screens/your_video_playlist_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -38,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
                         alignment: Alignment.center,
-                        color: Colors.grey.withOpacity(0.2),
+                        color: Colors.grey.withOpacity(0.1),
                       ),
                     ),
                   ),
@@ -102,28 +105,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.only(left: 10, right: 10),
               child: Column(
                 children: [
-                  ListTile(
-                    leading: Icon(Icons.audiotrack),
-                    title: Text('Audio Playlist'),
-                    trailing: Icon(
-                      Icons.chevron_right_outlined,
-                      color: Colors.redAccent,
+                  InkWell(
+                    onTap: () {
+                      Get.to(
+                        () => YourAudioPlaylist(),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Icon(Icons.audiotrack),
+                      title: Text('Audio Playlist'),
+                      trailing: Icon(
+                        Icons.chevron_right_outlined,
+                        color: Colors.redAccent,
+                      ),
                     ),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.video_collection_rounded),
-                    title: Text('Video Playlist'),
-                    trailing: Icon(
-                      Icons.chevron_right_outlined,
-                      color: Colors.redAccent,
+                  InkWell(
+                    onTap: () {
+                      Get.to(
+                        () => YourVideoPlaylist(),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Icon(Icons.video_collection_rounded),
+                      title: Text('Video Playlist'),
+                      trailing: Icon(
+                        Icons.chevron_right_outlined,
+                        color: Colors.redAccent,
+                      ),
                     ),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.account_balance_wallet),
-                    title: Text('Offering/Tithe Insight'),
-                    trailing: Icon(
-                      Icons.chevron_right_outlined,
-                      color: Colors.redAccent,
+                  InkWell(
+                    onTap: () {
+                      Get.to(
+                        () => YourTitheNOferringInsight(),
+                      );
+                    },
+                    child: ListTile(
+                      leading: Icon(Icons.account_balance_wallet),
+                      title: Text('Offering/Tithe Insight'),
+                      trailing: Icon(
+                        Icons.chevron_right_outlined,
+                        color: Colors.redAccent,
+                      ),
                     ),
                   ),
                 ],

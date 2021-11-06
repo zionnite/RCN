@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rcn/component/home_banner.dart';
-import 'package:rcn/component/study_with_apostle.dart';
-import 'package:rcn/component/upcoming_event_card.dart';
 import 'package:rcn/screens/read_daily_screen.dart';
 import 'package:rcn/util.dart';
+import 'package:rcn/widget/home_banner.dart';
+import 'package:rcn/widget/study_with_apostle.dart';
+import 'package:rcn/widget/upcoming_event_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

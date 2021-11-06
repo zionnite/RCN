@@ -2,9 +2,10 @@ import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
-Future<AudioHandler> initAudioService() async {
+Future<AudioHandler> initPlaylistAudioService() async {
   return await AudioService.init(
-    builder: () => MyAudioHandler(),
+    builder: () => MyPlaylistAudioHandler(),
+    cacheManager: null,
     config: AudioServiceConfig(
       androidNotificationChannelId: 'com.rcnauchi.rcn.audio',
       androidNotificationChannelName: 'Audio Service Demo',
@@ -14,7 +15,7 @@ Future<AudioHandler> initAudioService() async {
   );
 }
 
-class MyAudioHandler extends BaseAudioHandler {
+class MyPlaylistAudioHandler extends BaseAudioHandler {
   final _player = AudioPlayer();
   static int _nextMediaId = 0;
   final _playlist = ConcatenatingAudioSource(

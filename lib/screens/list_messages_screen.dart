@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:rcn/component/list_message_widget.dart';
+import 'package:rcn/widget/list_message_widget.dart';
 
 class ListMessagesScreen extends StatefulWidget {
   const ListMessagesScreen({Key? key}) : super(key: key);

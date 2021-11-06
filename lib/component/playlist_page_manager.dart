@@ -7,11 +7,10 @@ import 'package:rcn/services/playlist_repository.dart';
 import 'package:rcn/services/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PageManager {
+class PlaylistPageManager {
   // Listeners: Updates going to the UI
   final currentSongTitleNotifier = ValueNotifier<String>('');
   final currentSongImageNotifier = ValueNotifier<String>('');
-  final currentSongIDNotifier = ValueNotifier<String>('');
   final playlistNotifier = ValueNotifier<List<String>>([]);
   final progressNotifier = ProgressNotifier();
   final repeatButtonNotifier = RepeatButtonNotifier();
@@ -21,11 +20,10 @@ class PageManager {
   final isShuffleModeEnabledNotifier = ValueNotifier<bool>(false);
 
   final _audioHandler = getIt<AudioHandler>();
-  var newPlayList;
 
   // Events: Calls coming from the UI
   void init() async {
-    //await _loadPlaylist();
+    await _loadPlaylist();
     _listenToPlaybackState();
     _listenToCurrentPosition();
     _listenToBufferedPosition();
@@ -50,36 +48,15 @@ class PageManager {
     _audioHandler.addQueueItems(mediaItems);
   }
 
-  Future<void> loadMyAudioPlaylist() async {
-    final songRepository = getIt<PlaylistRepository>();
-    final playlist = await songRepository.fetchInitialPlaylist();
-
-    final mediaItems = playlist
-        .map((song) => MediaItem(
-              id: song['id'] ?? '',
-              album: song['album'] ?? '',
-              title: song['title'] ?? '',
-              artUri: Uri.parse(song['artUri'] ?? ''),
-              extras: {'url': song['url']},
-            ))
-        .toList();
-
-    //_audioHandler.removeAllQueueItem();
-    _audioHandler.addQueueItems(mediaItems);
-  }
-
   void _listenToChangesInPlaylist() {
     _audioHandler.queue.listen((playlist) {
       if (playlist.isEmpty) {
         playlistNotifier.value = [];
         currentSongTitleNotifier.value = '';
         currentSongImageNotifier.value = '';
-        currentSongIDNotifier.value = '';
       } else {
         final newList = playlist.map((item) => item.title).toList();
         playlistNotifier.value = newList;
-
-        newPlayList = playlist.map((item) => item).toList();
       }
       _updateSkipButtons();
     });
@@ -143,7 +120,6 @@ class PageManager {
         currentSongTitleNotifier.value = mediaItem?.title ?? '';
         artistUrl = mediaItem?.artUri;
         currentSongImageNotifier.value = artistUrl.toString();
-        currentSongIDNotifier.value = mediaItem?.id ?? '';
 
         _updateSkipButtons();
       },
@@ -169,24 +145,6 @@ class PageManager {
   void pause() {
     _audioHandler.pause();
   }
-
-  getCurrentSongId() {
-    return currentSongIDNotifier.value;
-  }
-
-  getCurrentPlaylist() {
-    return newPlayList;
-  }
-
-  void skipToQueueItem(int index, String name) {
-    _audioHandler.skipToQueueItem(index);
-  }
-
-  // void updateMyQueueItem(MediaItem mediaItem, int index) {
-  //   print('Song List Number Click ${mediaItem}');
-  //   print('Song List Number Click ${index}');
-  //   _audioHandler.updateMediaItem(mediaItem);
-  // }
 
   void seek(Duration position) => _audioHandler.seek(position);
 

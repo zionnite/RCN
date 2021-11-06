@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/route_manager.dart';
-import 'package:rcn/component/video_message_player_widget.dart';
+import 'package:rcn/widget/video_message_player_widget.dart';
 
 class VideoMessage extends StatefulWidget {
   const VideoMessage({Key? key}) : super(key: key);

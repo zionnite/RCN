@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rcn/component/announcement_widget.dart';
+import 'package:rcn/widget/announcement_widget.dart';
 
 class AnnouncementScreen extends StatefulWidget {
   const AnnouncementScreen({Key? key}) : super(key: key);

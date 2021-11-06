@@ -32,7 +32,7 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network('${widget.an_img}'),
+                Expanded(child: Image.network('${widget.an_img}')),
               ],
             ),
             SizedBox(

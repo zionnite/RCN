@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_shape_clipper.dart';
+import '../component/custom_shape_clipper.dart';
 
 class appTitleWidget extends StatelessWidget {
   String title;

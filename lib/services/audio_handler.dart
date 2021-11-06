@@ -174,6 +174,7 @@ class MyAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
+    removeAllQueueItem();
     // manage Just Audio
 
     final audioSource = mediaItems.map(_createAudioSource);
@@ -182,6 +183,8 @@ class MyAudioHandler extends BaseAudioHandler {
     // notify system
     final newQueue = queue.value!..addAll(mediaItems);
     queue.add(newQueue);
+
+    _player.setAudioSource(_playlist);
   }
 
   @override
@@ -246,6 +249,37 @@ class MyAudioHandler extends BaseAudioHandler {
     }
     _player.seek(Duration.zero, index: index);
   }
+
+  //TODO:// COME HERE ZIONNITE
+  // Future<void> skipToMyQueueItem(int index) async {
+  //   if (index < 0 || index >= queue.value!.length) return;
+  //
+  //   _player.seek(Duration.zero, index: index);
+  // }
+  //
+  // @override
+  // Future<Function> updateQueue(List<MediaItem> queue) async {
+  //
+  //
+  // }
+
+//   @override
+//   Future<void> updateMediaItem(MediaItem mediaItem) async {
+//     final audioSource = _createAudioSource(mediaItem);
+//     _playlist.add(audioSource);
+//
+//     // final newQueue = queue.value!..add(mediaItem);
+//     // queue.add(newQueue);
+//     _player.setAudioSource(_playlist);
+//   }
+//
+//   Future<void> updateQueue(List<MediaItem> queue) async {
+//     this.queue.add(queue);
+//     await _player.setAudioSource(ConcatenatingAudioSource(
+//       children:
+//           queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
+//     ));
+//   }
 
   @override
   Future<void> skipToNext() => _player.seekToNext();

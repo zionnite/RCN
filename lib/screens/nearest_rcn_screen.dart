@@ -1,6 +1,6 @@
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
-import 'package:rcn/component/nearest_rcn_widget.dart';
+import 'package:rcn/widget/nearest_rcn_widget.dart';
 
 class NearestRcnScreen extends StatefulWidget {
   NearestRcnScreen({

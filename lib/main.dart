@@ -136,12 +136,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     getIt<PageManager>().init();
+    //getIt<PlaylistPageManager>().init();
     FlutterDownloader.registerCallback(downloadCallback);
   }
 
   @override
   void dispose() {
     getIt<PageManager>().dispose();
+    //getIt<PlaylistPageManager>().dispose();
     super.dispose();
   }
 
