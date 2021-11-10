@@ -25,7 +25,7 @@ class PageManager {
 
   // Events: Calls coming from the UI
   void init() async {
-    //await _loadPlaylist();
+    // await _loadPlaylist();
     _listenToPlaybackState();
     _listenToCurrentPosition();
     _listenToBufferedPosition();
@@ -43,6 +43,7 @@ class PageManager {
               id: song['id'] ?? '',
               album: song['album'] ?? '',
               title: song['title'] ?? '',
+              artUri: Uri.parse(song['artUri'] ?? ''),
               extras: {'url': song['url']},
             ))
         .toList();

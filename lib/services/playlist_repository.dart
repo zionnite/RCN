@@ -6,7 +6,7 @@ abstract class PlaylistRepository {
 class DemoPlaylist extends PlaylistRepository {
   @override
   Future<List<Map<String, String>>> fetchInitialPlaylist(
-      {int length = 16}) async {
+      {int length = 20}) async {
     return List.generate(
       length,
       (index) => _nextSong(),
@@ -19,7 +19,7 @@ class DemoPlaylist extends PlaylistRepository {
   }
 
   var _songIndex = 0;
-  static const _maxSongNumber = 100;
+  static const _maxSongNumber = 20;
 
   Map<String, String> _nextSong() {
     _songIndex = (_songIndex % _maxSongNumber) + 1;

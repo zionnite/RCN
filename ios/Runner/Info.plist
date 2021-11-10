@@ -2,12 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>https</string>
-      <string>http</string>
 
-    </array>
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
@@ -27,6 +22,15 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FDAllFilesDownloadedMessage</key>
+	<string>All files have been downloaded</string>
+	<key>FDMaximumConcurrentTasks</key>
+	<integer>15</integer>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -36,14 +40,6 @@
 		<key>NSAllowsArbitraryLoadsForMedia</key>
 		<true/>
 	</dict>
-
-	<key>FDMaximumConcurrentTasks</key>
-    <integer>15</integer>
-
-    <key>FDAllFilesDownloadedMessage</key>
-    <string>All files have been downloaded</string>
-
-
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app require the Microphone in order to Play the lovely teaching of our Dear Man of God</string>
 	<key>UIBackgroundModes</key>

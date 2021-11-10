@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:rcn/model/itinerary_model.dart';
 import 'package:rcn/screens/upcoming_itenary_screen.dart';
 import 'package:rcn/util.dart';
 
 class UpComingEventCard extends StatefulWidget {
-  const UpComingEventCard({Key? key}) : super(key: key);
+  UpComingEventCard({Key? key, required this.itineraryList}) : super(key: key);
+
+  Itinerary itineraryList;
 
   @override
   _UpComingEventCardState createState() => _UpComingEventCardState();
@@ -23,11 +26,10 @@ class _UpComingEventCardState extends State<UpComingEventCard> {
           children: [
             Container(
               padding: EdgeInsets.all(8),
-              // width: 200,
+              width: 120,
               height: 170,
               child: CachedNetworkImage(
-                imageUrl:
-                    "https://rcnauchi.com/other_img/greetings/b95e23dcebabc991a85b52bb62287300.jpeg",
+                imageUrl: "${widget.itineraryList.image}",
                 fit: BoxFit.cover,
                 fadeInDuration: Duration(milliseconds: 500),
                 fadeInCurve: Curves.easeIn,
@@ -48,7 +50,7 @@ class _UpComingEventCardState extends State<UpComingEventCard> {
                     height: 5.0,
                   ),
                   Text(
-                    'Apostolic Invasion - Uganda',
+                    '${widget.itineraryList.title} - ${widget.itineraryList.location}',
                     style: TextStyle(
                       fontSize: 15.0,
                       color: textColorBlack,
@@ -60,7 +62,7 @@ class _UpComingEventCardState extends State<UpComingEventCard> {
                     height: 5.0,
                   ),
                   Text(
-                    'Apostle will  becoming to Uganda under mandate of Heaven, save the date and dont miss it for anything',
+                    '${widget.itineraryList.desc}',
                     maxLines: 3,
                   ),
                   Row(
@@ -71,7 +73,9 @@ class _UpComingEventCardState extends State<UpComingEventCard> {
                         child: InkWell(
                           onTap: () {
                             Get.to(
-                              UpcomingItenaryScreen(),
+                              UpcomingItenaryScreen(
+                                itineraryList: widget.itineraryList,
+                              ),
                             );
                           },
                           child: Card(

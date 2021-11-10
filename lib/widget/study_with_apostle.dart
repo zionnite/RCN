@@ -2,7 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class StudyWithApostle extends StatefulWidget {
-  const StudyWithApostle({Key? key}) : super(key: key);
+  StudyWithApostle({Key? key, required this.seek_body, required this.seek_img})
+      : super(key: key);
+
+  String seek_img;
+  String seek_body;
 
   @override
   _StudyWithApostleState createState() => _StudyWithApostleState();
@@ -38,14 +42,12 @@ class _StudyWithApostleState extends State<StudyWithApostle> {
                   child: Container(
                     width: double.infinity,
                     child: CachedNetworkImage(
-                      imageUrl:
-                          "https://rcnauchi.com/other_img/greetings/b95e23dcebabc991a85b52bb62287300.jpeg",
+                      imageUrl: "${widget.seek_img}",
                       fit: BoxFit.cover,
                       fadeInDuration: Duration(milliseconds: 500),
                       fadeInCurve: Curves.easeIn,
                       placeholder: (context, progressText) => Center(
                         child: CircularProgressIndicator(
-                          value: 0.8,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             Colors.purple,
                           ),
@@ -57,7 +59,7 @@ class _StudyWithApostleState extends State<StudyWithApostle> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Learning from the persecuted Church Learning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted Church Learning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted ChurchLearning from the persecuted Church',
+                    '${widget.seek_body}',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 10.0,
@@ -72,7 +74,7 @@ class _StudyWithApostleState extends State<StudyWithApostle> {
           ),
         ),
         SizedBox(
-          width: 5.0,
+          width: 1.0,
         ),
       ],
     );

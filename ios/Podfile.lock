@@ -42,6 +42,8 @@ PODS:
     - Flutter
   - wakelock (0.0.1):
     - Flutter
+  - workmanager (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - audio_service (from `.symlinks/plugins/audio_service/ios`)
@@ -61,6 +63,7 @@ DEPENDENCIES:
   - video_compress (from `.symlinks/plugins/video_compress/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
+  - workmanager (from `.symlinks/plugins/workmanager/ios`)
 
 SPEC REPOS:
   trunk:
@@ -102,6 +105,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player/ios"
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
+  workmanager:
+    :path: ".symlinks/plugins/workmanager/ios"
 
 SPEC CHECKSUMS:
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
@@ -123,7 +128,8 @@ SPEC CHECKSUMS:
   video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
+  workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
 
-PODFILE CHECKSUM: a80fe25e4fd1929578ad2353194cc46da3deecd9
+PODFILE CHECKSUM: 5b9697d1d0bd9f819e601b69bebdc6020be7bc6e
 
 COCOAPODS: 1.10.2

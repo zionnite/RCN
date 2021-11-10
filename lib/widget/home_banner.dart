@@ -59,7 +59,6 @@ class _HomeBannerState extends State<HomeBanner> {
     if (_imgs.isEmpty) {
       return Center(
         child: CircularProgressIndicator(
-          value: 0.8,
           valueColor: AlwaysStoppedAnimation<Color>(Colors.purple),
         ),
       );
