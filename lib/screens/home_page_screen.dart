@@ -1,12 +1,6 @@
-import 'dart:io';
-
-import 'package:android_path_provider/android_path_provider.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:rcn/controller/itinerary_controller.dart';
 import 'package:rcn/controller/seek_god_controller.dart';
 import 'package:rcn/model/seek_god.dart';
@@ -28,11 +22,6 @@ class _HomePageState extends State<HomePage> {
   final itineraryController = ItineraryController().getXID;
 
   var seekerList = <SeeKGod>[];
-
-  late String _localPath;
-  bool downloading = false;
-  var progressString = "";
-  double progress = 0.0;
 
   @override
   void initState() {
@@ -88,25 +77,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ],
-            ),
-
-            InkWell(
-              onTap: () async {
-                _prepare();
-                String url =
-                    "https://rcnsermons.org/2021%20updload/01%20January%202021%20-%20Prayer%20And%20Fasting/08%20Inner%20Knowledge%20Of%20Reckoning%20-%20%28Apst.%20Arome%20Osayi%29%20-%20Wed.%2014th%202021.mp3";
-                //downloadFile(url);
-              },
-              child: (downloading)
-                  ? LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 10,
-                    )
-                  : Card(
-                      child: Text(
-                        'Hello Click',
-                      ),
-                    ),
             ),
 
             Material(
@@ -252,72 +222,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  _prepare() async {
-    // final status = await Permission.storage.request();
-    final status = (Platform.isAndroid)
-        ? await Permission.storage.request()
-        : await Permission.photos.request();
-
-    print(status);
-    if (status.isGranted) {
-      await _prepareSaveDir();
-    } else if (status.isPermanentlyDenied) {
-      openAppSettings();
-    }
-  }
-
-  Future<void> _prepareSaveDir() async {
-    _localPath = (await _findLocalPath())!;
-    final savedDir = Directory(_localPath);
-    bool hasExisted = await savedDir.exists();
-    if (!hasExisted) {
-      savedDir.create();
-    }
-  }
-
-  Future<String?> _findLocalPath() async {
-    var externalStorageDirPath;
-    if (Platform.isAndroid) {
-      try {
-        externalStorageDirPath = await AndroidPathProvider.downloadsPath;
-      } catch (e) {
-        final directory = await getExternalStorageDirectory();
-        externalStorageDirPath = directory?.path;
-      }
-    } else if (Platform.isIOS) {
-      externalStorageDirPath =
-          (await getApplicationDocumentsDirectory()).absolute.path;
-    }
-    return externalStorageDirPath;
-  }
-
-  Future<void> downloadFile(String url) async {
-    Dio dio = Dio();
-
-    try {
-      var dir = await getApplicationDocumentsDirectory();
-
-      await dio.download(url, "${_localPath}/myimage.mp3",
-          onReceiveProgress: (rec, total) {
-        print("Rec: $rec , Total: $total");
-
-        setState(() {
-          downloading = true;
-          progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
-          progress = rec / total;
-        });
-      });
-    } catch (e) {
-      print(e);
-    }
-
-    setState(() {
-      downloading = false;
-      progressString = "Completed";
-    });
-    print("Download completed");
   }
 
   showSnackBar(String title, String msg, Color backgroundColor) {

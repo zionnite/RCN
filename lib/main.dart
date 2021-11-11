@@ -11,9 +11,9 @@ import 'package:rcn/screens/home_page_screen.dart';
 import 'package:rcn/screens/nearest_rcn_screen.dart';
 import 'package:rcn/screens/profile_screen.dart';
 import 'package:rcn/screens/speak_to_someone_screen.dart';
-import 'package:rcn/screens/upcoming_itenary_screen.dart';
 import 'package:rcn/services/service_locator.dart';
 
+import 'controller/audio_msg_controller.dart';
 import 'controller/itinerary_controller.dart';
 import 'controller/seek_god_controller.dart';
 import 'screens/about_rcn_screen.dart';
@@ -30,6 +30,7 @@ void main() async {
   Get.put(PlayerController());
   Get.put(SeekGodController());
   Get.put(ItineraryController());
+  Get.put(AudioMsgController());
 
   await setupServiceLocator();
   //await FlutterDownloader.initialize(debug: debug);
