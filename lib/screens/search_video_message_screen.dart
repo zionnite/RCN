@@ -1,21 +1,20 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/state_manager.dart';
 import 'package:rcn/controller/video_msg_controller.dart';
-import 'package:rcn/screens/search_video_message_screen.dart';
 import 'package:rcn/widget/video_message_player_widget.dart';
 
-class VideoMessage extends StatefulWidget {
-  const VideoMessage({Key? key}) : super(key: key);
+class searchVideoMessageScreen extends StatefulWidget {
+  searchVideoMessageScreen({Key? key, required this.search_term})
+      : super(key: key);
+  String search_term;
 
   @override
-  _VideoMessageState createState() => _VideoMessageState();
+  _searchVideoMessageScreenState createState() =>
+      _searchVideoMessageScreenState();
 }
 
-class _VideoMessageState extends State<VideoMessage> {
+class _searchVideoMessageScreenState extends State<searchVideoMessageScreen> {
   final videoMsgListController = VideoMsgController().getXID;
   late ScrollController _controller;
 
@@ -30,7 +29,8 @@ class _VideoMessageState extends State<VideoMessage> {
   @override
   void initState() {
     super.initState();
-    videoMsgListController.getDetails(user_id);
+    videoMsgListController.fetch_search_page(
+        current_page, widget.search_term, user_id);
     _controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -43,17 +43,25 @@ class _VideoMessageState extends State<VideoMessage> {
 
       //
 
-      videoMsgListController.getMoreDetail(current_page, user_id);
+      videoMsgListController.fetch_search_page_by_pagination(
+        current_page,
+        widget.search_term,
+        user_id,
+      );
 
-      // Future.delayed(new Duration(seconds: 4), () {
-      //   setState(() {
-      //     isLoading = false;
-      //   });
-      // });
+      Future.delayed(new Duration(seconds: 1), () {
+        setState(() {
+          isLoading = false;
+        });
+      });
     }
   }
 
-  void searchVideoMessage() {}
+  void searchVideo() {
+    videoMsgListController.fetch_search_page(1, searchTerm, user_id);
+    _controller = ScrollController()..addListener(_scrollListener);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +78,7 @@ class _VideoMessageState extends State<VideoMessage> {
                   child: Padding(
                     padding: EdgeInsets.only(top: 100.0),
                     child: Text(
-                      'Video Messages',
+                      'Search Video',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 35.0,
@@ -122,11 +130,7 @@ class _VideoMessageState extends State<VideoMessage> {
                                 searchTermController.text = '';
                                 _showStatus = false;
                               });
-                              Get.to(
-                                () => searchVideoMessageScreen(
-                                  search_term: searchTerm,
-                                ),
-                              );
+                              searchVideo();
                             } else {
                               setState(() {
                                 setState(() {
@@ -168,31 +172,36 @@ class _VideoMessageState extends State<VideoMessage> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       physics: ClampingScrollPhysics(),
-                      itemCount: videoMsgListController.videoMsgList.length,
+                      itemCount:
+                          videoMsgListController.searchvideoMsgList.length,
                       itemBuilder: (BuildContext context, int index) {
                         if (index ==
-                                videoMsgListController.videoMsgList.length -
+                                videoMsgListController
+                                        .searchvideoMsgList.length -
                                     1 &&
                             videoMsgListController.isMoreDataAvailable.value ==
-                                true) {
+                                true &&
+                            isLoading == true) {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
                         }
-                        if (videoMsgListController.videoMsgList[index].id ==
+                        if (videoMsgListController
+                                .searchvideoMsgList[index].id ==
                             null) {
                           videoMsgListController.isMoreDataAvailable.value =
                               false;
                           return Container();
                         }
                         return VideoMessagePlayerWidget(
-                          vid_image:
-                              videoMsgListController.videoMsgList[index].image,
-                          vid_link:
-                              videoMsgListController.videoMsgList[index].link,
-                          vid_title:
-                              videoMsgListController.videoMsgList[index].title,
-                          vid_id: videoMsgListController.videoMsgList[index].id,
+                          vid_image: videoMsgListController
+                              .searchvideoMsgList[index].image,
+                          vid_link: videoMsgListController
+                              .searchvideoMsgList[index].link,
+                          vid_title: videoMsgListController
+                              .searchvideoMsgList[index].title,
+                          vid_id: videoMsgListController
+                              .searchvideoMsgList[index].id,
                           user_id: user_id.toString(),
                           isPlayListed: videoMsgListController
                               .videoMsgList[index].isPlayListed,

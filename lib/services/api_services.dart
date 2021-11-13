@@ -17,6 +17,8 @@ class ApiServices {
   static String _search_audio_msg = 'search_audio';
   static String _toggle_audio_playlist = 'toggle_audio_playlist';
   static String _video_msg = 'video_msg';
+  static String _search_video_msg = 'search_video';
+  static String _toggle_video_playlist = 'toggle_video_playlist';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -118,17 +120,6 @@ class ApiServices {
     final j = json.decode(body) as Map<String, dynamic>;
     String status = j['status'];
     return status;
-
-    // print(body);
-    // try {
-    //   final myObject = json.decode(response.body) as Object?;
-    //   if (myObject is! Map) throw FormatException();
-    //   final name = myObject['status'] as String;
-    //   return name;
-    // } on FormatException {
-    //   print('JSON is in the wrong format');
-    //   return 'N';
-    // }
   }
 
   static Future<List<VideoMsg>> getVideoMsg(var page_num, var user_id) async {
@@ -144,6 +135,27 @@ class ApiServices {
     } catch (ex) {
       return Future.error(ex.toString());
     }
+  }
+
+  static Future<List<VideoMsg>> getSearchVideoMsg(
+      var current_page, String search_term, var user_id) async {
+    final uri =
+        Uri.parse('$_mybaseUrl$_search_video_msg/$current_page/$user_id');
+
+    var response = await http.post(uri, body: {
+      'search_term': search_term,
+    });
+
+    return videoMsgFromJson(response.body);
+  }
+
+  static Future<String> toggleVideoPlaylist(var user_id, var audio_id) async {
+    final response = await http.get(
+        Uri.parse('$_mybaseUrl$_toggle_video_playlist/$user_id/$audio_id'));
+    var body = response.body;
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
   }
 
   // Future<List<UserProfile>> searchUsersByPage(

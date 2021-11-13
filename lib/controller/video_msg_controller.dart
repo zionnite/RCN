@@ -12,6 +12,7 @@ class VideoMsgController extends GetxController {
   var isMoreDataAvailable = true.obs;
 
   var videoMsgList = <VideoMsg>[].obs;
+  var searchvideoMsgList = <VideoMsg>[].obs;
 
   @override
   void onInit() {
@@ -54,12 +55,70 @@ class VideoMsgController extends GetxController {
     }
   }
 
+  void fetch_search_page(var page_num, var search_term, var user_id) async {
+    var seeker =
+        await ApiServices.getSearchVideoMsg(page_num, search_term, user_id);
+
+    if (seeker != null) {
+      isMoreDataAvailable(true);
+      searchvideoMsgList.clear();
+      searchvideoMsgList.addAll(seeker);
+    } else {
+      isMoreDataAvailable(false);
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+
+    if (isMoreDataAvailable == false) {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+  }
+
+  void fetch_search_page_by_pagination(
+      var page_num, var search_term, var user_id) async {
+    var seeker =
+        await ApiServices.getSearchVideoMsg(page_num, search_term, user_id);
+
+    if (seeker != null) {
+      isMoreDataAvailable(true);
+      searchvideoMsgList.addAll(seeker);
+    } else {
+      isMoreDataAvailable(false);
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+
+    if (isMoreDataAvailable == false) {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+  }
+
+  Future<String> toggle_playlist(var user_id, var audio_id) async {
+    var seeker = await ApiServices.toggleVideoPlaylist(user_id, audio_id);
+
+    if (seeker == "deleted") {
+      showSnackBar("Removed", "Video removed from your playlist", Colors.red);
+    } else if (seeker == "un_deleted") {
+      showSnackBar("Oops!!", "could not removed Video from your playlist",
+          Colors.deepOrange);
+    } else if (seeker == "added") {
+      showSnackBar("Success", "Video added to your playlist", Colors.green);
+    } else if (seeker == "un_added") {
+      showSnackBar("Oops!!", "Video could not be added to your playlist",
+          Colors.deepOrange);
+    } else {
+      showSnackBar("Oops!!", "Unidentified error occur", Colors.deepOrange);
+    }
+
+    return seeker;
+    //return seeker;
+  }
+
   showSnackBar(String title, String msg, Color backgroundColor) {
     Get.snackbar(
       title,
       msg,
       backgroundColor: backgroundColor,
       colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/route_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rcn/controller/video_msg_controller.dart';
 import 'package:rcn/screens/view_video_screen.dart';
 
 class VideoMessagePlayerWidget extends StatefulWidget {
@@ -17,13 +18,16 @@ class VideoMessagePlayerWidget extends StatefulWidget {
     required this.vid_link,
     required this.vid_title,
     required this.vid_id,
-    //required this.vid_album,
+    required this.user_id,
+    required this.isPlayListed,
   }) : super(key: key);
 
   String vid_image;
   String vid_link;
   String vid_title;
   String vid_id;
+  String user_id;
+  bool isPlayListed;
   //String vid_album;
 
   @override
@@ -32,6 +36,8 @@ class VideoMessagePlayerWidget extends StatefulWidget {
 }
 
 class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
+  final videoMsgListController = VideoMsgController().getXID;
+
   late String _localPath;
   bool downloading = false;
   var progressString = "";
@@ -106,6 +112,9 @@ class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
                           () => ViewVideoScreen(
                             youTubeLink: widget.vid_link,
                             youTubeTitle: widget.vid_title,
+                            youtube_vid_id: widget.vid_id,
+                            user_id: widget.user_id,
+                            isPlayListed: widget.isPlayListed,
                           ),
                         );
                       },
@@ -152,6 +161,9 @@ class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
                           () => ViewVideoScreen(
                             youTubeLink: widget.vid_link,
                             youTubeTitle: widget.vid_title,
+                            user_id: widget.user_id,
+                            youtube_vid_id: widget.vid_id,
+                            isPlayListed: widget.isPlayListed,
                           ),
                         );
                       } else if (value == 'Download') {
@@ -181,19 +193,34 @@ class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
                               "Audio Message has been saved into your device, enjoy!...",
                               Colors.black);
                         }
-                      } else if (value == 'Playlist') {}
+                      } else if (value == 'Playlist') {
+                        var toggle = await videoMsgListController
+                            .toggle_playlist(widget.user_id, widget.vid_id);
+
+                        if (toggle == 'added') {
+                          setState(() {
+                            widget.isPlayListed = true;
+                          });
+                        } else if (toggle == 'deleted') {
+                          setState(() {
+                            widget.isPlayListed = false;
+                          });
+                        }
+                      }
                     },
                     itemBuilder: (context) => [
                       PopupMenuItem(
                         child: Text("Play"),
                         value: "Play",
                       ),
+                      // PopupMenuItem(
+                      //   child: Text("Download"),
+                      //   value: "Download",
+                      // ),
                       PopupMenuItem(
-                        child: Text("Download"),
-                        value: "Download",
-                      ),
-                      PopupMenuItem(
-                        child: Text("Add to Playlist"),
+                        child: (widget.isPlayListed)
+                            ? Text('Remove from Playlist')
+                            : Text("Add to Playlist"),
                         value: "Playlist",
                       ),
                     ],

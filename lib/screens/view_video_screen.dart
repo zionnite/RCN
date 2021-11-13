@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rcn/controller/video_msg_controller.dart';
 import 'package:rcn/util.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ViewVideoScreen extends StatefulWidget {
-  ViewVideoScreen(
-      {Key? key, required this.youTubeLink, required this.youTubeTitle})
-      : super(key: key);
+  ViewVideoScreen({
+    Key? key,
+    required this.youTubeLink,
+    required this.youTubeTitle,
+    required this.user_id,
+    required this.youtube_vid_id,
+    required this.isPlayListed,
+  }) : super(key: key);
 
   String youTubeLink;
   String youTubeTitle;
+  String youtube_vid_id;
+  String user_id;
+  bool isPlayListed;
 
   @override
   _ViewVideoScreenState createState() => _ViewVideoScreenState();
 }
 
 class _ViewVideoScreenState extends State<ViewVideoScreen> {
+  final videoMsgListController = VideoMsgController().getXID;
+
   late String videoId;
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
@@ -145,7 +157,10 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
                     height: 10,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      showSnackBar("Video Download", "Features Coming Soon!...",
+                          Colors.red);
+                    },
                     child: Card(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
@@ -174,7 +189,20 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () async {
+                      var toggle = await videoMsgListController.toggle_playlist(
+                          widget.user_id, widget.youtube_vid_id);
+
+                      if (toggle == 'added') {
+                        setState(() {
+                          widget.isPlayListed = true;
+                        });
+                      } else if (toggle == 'deleted') {
+                        setState(() {
+                          widget.isPlayListed = false;
+                        });
+                      }
+                    },
                     child: Card(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
@@ -183,21 +211,33 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
                         ),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      color: Colors.green,
+                      color: (widget.isPlayListed)
+                          ? Colors.redAccent
+                          : Colors.green,
                       elevation: 3,
                       child: Container(
                         width: double.infinity,
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),
-                          child: Text(
-                            'Add To Playlist',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                          child: (widget.isPlayListed)
+                              ? Text(
+                                  'Remove From Playlist',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              : Text(
+                                  'Add To Playlist',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                         ),
                       ),
                     ),
@@ -310,6 +350,16 @@ class _ViewVideoScreenState extends State<ViewVideoScreen> {
           borderRadius: BorderRadius.circular(50.0),
         ),
       ),
+    );
+  }
+
+  showSnackBar(String title, String msg, Color backgroundColor) {
+    Get.snackbar(
+      title,
+      msg,
+      backgroundColor: backgroundColor,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
     );
   }
 }
