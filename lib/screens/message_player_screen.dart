@@ -1,32 +1,130 @@
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:android_path_provider/android_path_provider.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rcn/component/page_manager.dart';
+import 'package:rcn/controller/audio_msg_controller.dart';
 import 'package:rcn/notifiers/play_button_notifier.dart';
 import 'package:rcn/notifiers/progress_notifier.dart';
 import 'package:rcn/notifiers/repeat_button_notifier.dart';
 import 'package:rcn/services/service_locator.dart';
 
 class MessagePlayer extends StatefulWidget {
-  MessagePlayer(
-      {required this.id,
-      required this.title,
-      required this.album,
-      required this.url,
-      required this.artUri});
+  MessagePlayer({
+    required this.id,
+    required this.title,
+    required this.album,
+    required this.url,
+    required this.artUri,
+    required this.isPlayListed,
+    required this.user_id,
+  });
   String id;
   String title;
   String album;
   String url;
   String artUri;
+  bool isPlayListed;
+  String user_id;
 
   @override
   _MessagePlayerState createState() => _MessagePlayerState();
 }
 
 class _MessagePlayerState extends State<MessagePlayer> {
+  final audioMsgListController = AudioMsgController().getXID;
+
+  late String _localPath;
+  bool downloading = false;
+  var progressString = "";
+  double progress = 0.0;
+  var totalSize;
+
+  _prepare() async {
+    final status = await Permission.storage.request();
+    // final status = (Platform.isAndroid)
+    //     ? await Permission.storage.request()
+    //     : await Permission.photos.request();
+
+    // print(status);
+    if (status.isGranted) {
+      await _prepareSaveDir();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
+  Future<void> _prepareSaveDir() async {
+    _localPath = (await _findLocalPath())!;
+    final savedDir = Directory(_localPath);
+    bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      savedDir.create();
+    }
+  }
+
+  Future<String?> _findLocalPath() async {
+    var externalStorageDirPath;
+    if (Platform.isAndroid) {
+      try {
+        externalStorageDirPath = await AndroidPathProvider.downloadsPath;
+      } catch (e) {
+        final directory = await getExternalStorageDirectory();
+        externalStorageDirPath = directory?.path;
+      }
+    } else if (Platform.isIOS) {
+      externalStorageDirPath =
+          (await getApplicationDocumentsDirectory()).absolute.path;
+    }
+    return externalStorageDirPath;
+  }
+
+  Future<void> downloadFile(String url, var file_name) async {
+    Dio dio = Dio();
+
+    try {
+      var dir = await getApplicationDocumentsDirectory();
+
+      await dio.download(url, "${_localPath}/$file_name.mp3",
+          onReceiveProgress: (rec, total) {
+        setState(() {
+          downloading = true;
+          progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
+          progress = rec / total;
+          totalSize = (total / 100).toStringAsFixed(0);
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      downloading = false;
+      progressString = "Completed";
+    });
+    showSnackBar(
+      'Congratulation',
+      'File Downloaded successfully',
+      Colors.green,
+    );
+  }
+
+  showSnackBar(String title, String msg, Color backgroundColor) {
+    Get.snackbar(
+      title,
+      msg,
+      backgroundColor: backgroundColor,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,7 +191,6 @@ class _MessagePlayerState extends State<MessagePlayer> {
             Stack(
               children: [
                 CurrentSongImage(),
-
                 Positioned(
                   top: 30,
                   child: IconButton(
@@ -107,17 +204,6 @@ class _MessagePlayerState extends State<MessagePlayer> {
                     ),
                   ),
                 ),
-                // Positioned(
-                //   bottom: 40,
-                //   child: Column(
-                //     children: [
-                //       Container(
-                //         padding: EdgeInsets.symmetric(horizontal: 10),
-                //         child: CurrentSongTitle(),
-                //       ),
-                //     ],
-                //   ),
-                // ),
               ],
             ),
             Container(
@@ -133,8 +219,27 @@ class _MessagePlayerState extends State<MessagePlayer> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: () {
-                      print('Download Tap');
+                    onTap: () async {
+                      if (downloading == false) {
+                        setState(() {
+                          downloading = true;
+                        });
+                        await _prepare();
+                        downloadFile(widget.url, widget.title);
+
+                        if (downloading == true) {
+                          showSnackBar("Downloading",
+                              "Audio Message is downloading...", Colors.black);
+                        } else if (downloading == false) {
+                          showSnackBar(
+                              "Download Completed",
+                              "Audio Message has been saved into your device, enjoy!...",
+                              Colors.black);
+                        }
+                      } else {
+                        showSnackBar(
+                            "Wait", "Download is in Progress...", Colors.black);
+                      }
                     },
                     child: Card(
                       color: Colors.deepOrange,
@@ -162,22 +267,40 @@ class _MessagePlayerState extends State<MessagePlayer> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {
-                      print('Playlist Tap');
+                    onTap: () async {
+                      var toggle = await audioMsgListController.toggle_playlist(
+                          widget.user_id, widget.id);
+
+                      if (toggle == 'added') {
+                        setState(() {
+                          widget.isPlayListed = true;
+                        });
+                      } else if (toggle == 'deleted') {
+                        setState(() {
+                          widget.isPlayListed = false;
+                        });
+                      }
                     },
                     child: Card(
-                      color: Colors.green,
+                      color: (widget.isPlayListed) ? Colors.red : Colors.green,
                       elevation: 2,
                       child: Container(
                         padding: EdgeInsets.all(10),
                         child: Row(
                           children: [
-                            Text(
-                              'Add to Playlist',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
+                            (widget.isPlayListed)
+                                ? Text(
+                                    'Remove from Playlist',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    'Add to Playlist',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                             SizedBox(
                               width: 5,
                             ),
@@ -192,7 +315,25 @@ class _MessagePlayerState extends State<MessagePlayer> {
                   ),
                 ],
               ),
-            )
+            ),
+            (downloading)
+                ? Padding(
+                    padding:
+                        const EdgeInsets.only(left: 80, right: 80, top: 8.0),
+                    child: Column(
+                      children: [
+                        LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('${progressString}'),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

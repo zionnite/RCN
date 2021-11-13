@@ -75,6 +75,8 @@ class _ListMessageWidgetState extends State<ListMessageWidget> {
                   album: '${widget.aud_album}',
                   url: '${widget.aud_link}',
                   artUri: '${widget.aud_image}',
+                  isPlayListed: widget.isPlayListed,
+                  user_id: widget.user_id,
                 ),
               );
             } else if (value == 'Download') {
