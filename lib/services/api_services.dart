@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:rcn/model/announcement_model.dart';
 import 'package:rcn/model/audio_msg_model.dart';
 import 'package:rcn/model/itinerary_model.dart';
+import 'package:rcn/model/nearest_rcn_model.dart';
 import 'package:rcn/model/seek_god.dart';
 import 'package:rcn/model/slider.dart';
 import 'package:rcn/model/video_msg_model.dart';
@@ -21,6 +22,7 @@ class ApiServices {
   static String _search_video_msg = 'search_video';
   static String _toggle_video_playlist = 'toggle_video_playlist';
   static String _announcement = 'announcement';
+  static String _nearest_rcn = 'nearest_rcn';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -31,16 +33,6 @@ class ApiServices {
       return null;
     }
   }
-
-  // static Future<List<SeeKGod>?> getSeekGod(var page_num) async {
-  //   final result = await client.get(Uri.parse('$mybaseUrl$seek_god/$page_num'));
-  //   if (result.statusCode == 200) {
-  //     final slider = seeKGodFromJson(result.body);
-  //     return slider;
-  //   } else {
-  //     return null;
-  //   }
-  // }
 
   static Future<List<SeeKGod>> getSeekGod(var page_num) async {
     try {
@@ -150,6 +142,21 @@ class ApiServices {
           await client.get(Uri.parse('$_mybaseUrl$_announcement/$page_num'));
       if (result.statusCode == 200) {
         final an = announcementModelFromJson(result.body);
+        return an;
+      } else {
+        return Future.error('Unwanted status Code');
+      }
+    } catch (ex) {
+      return Future.error(ex.toString());
+    }
+  }
+
+  static Future<List<NearestRcnModel>> getNearestRCN(var page_num) async {
+    try {
+      final result =
+          await client.get(Uri.parse('$_mybaseUrl$_nearest_rcn/$page_num'));
+      if (result.statusCode == 200) {
+        final an = nearestRcnModelFromJson(result.body);
         return an;
       } else {
         return Future.error('Unwanted status Code');

@@ -24,7 +24,7 @@ class NearestRcnWidget extends StatefulWidget {
   String nearest_website;
   String nearest_lat;
   String nearest_lon;
-  bool isLatLon;
+  String isLatLon;
 
   @override
   _NearestRcnWidgetState createState() => _NearestRcnWidgetState();
@@ -169,7 +169,7 @@ class _NearestRcnWidgetState extends State<NearestRcnWidget> {
               TextButton(
                 style: flatButtonStyle,
                 onPressed: () {
-                  (widget.isLatLon)
+                  (widget.isLatLon == "1")
                       ? MapsLauncher.launchCoordinates(
                           double.parse(widget.nearest_lat),
                           double.parse(widget.nearest_lon))

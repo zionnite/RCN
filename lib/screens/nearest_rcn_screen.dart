@@ -1,5 +1,7 @@
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:rcn/controller/nearest_rcn_controller.dart';
 import 'package:rcn/widget/nearest_rcn_widget.dart';
 
 class NearestRcnScreen extends StatefulWidget {
@@ -17,6 +19,8 @@ class _NearestRcnScreenState extends State<NearestRcnScreen> {
   final GlobalKey<ExpansionTileCardState> cardA = new GlobalKey();
   final GlobalKey<ExpansionTileCardState> cardB = new GlobalKey();
 
+  final nearController = NearestRcnController().getXID;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,35 +32,37 @@ class _NearestRcnScreenState extends State<NearestRcnScreen> {
         ),
       ),
       body: SingleChildScrollView(
+        controller: nearController.nearestScrollController,
         child: Card(
-          child: ListView(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              NearestRcnWidget(
-                nearest_title: 'RCN Auchi',
-                nearest_point_man: 'Rev Stanley',
-                neearest_location:
-                    '1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA',
-                nearest_phone_no: '+2348034323343',
-                nearest_website: 'https://www.rcnauchi.com',
-                nearest_lat: '101192',
-                nearest_lon: '8837272',
-                isLatLon: false,
-              ),
-              NearestRcnWidget(
-                nearest_title: 'RCN Auchi',
-                nearest_point_man: 'Rev Stanley',
-                neearest_location:
-                    'Hi there, I\'m a drop-in replacement for Flutter\'s ExpansionTile.Use me any time you think your app could benefit from being just a bit more Material. These buttons control the next card down!',
-                nearest_phone_no: '0800-34323-343',
-                nearest_website: 'www.rcnauchi.com',
-                nearest_lat: '101192',
-                nearest_lon: '8837272',
-                isLatLon: false,
-              ),
-            ],
+          child: Obx(
+            () => ListView.builder(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: nearController.nearList.length,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == nearController.nearList.length - 1 &&
+                    nearController.isMoreDataAvailable.value == true) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (nearController.nearList[index].id == null) {
+                  nearController.isMoreDataAvailable.value = false;
+                  return Container();
+                }
+                return NearestRcnWidget(
+                  nearest_title: nearController.nearList[index].title,
+                  nearest_point_man: nearController.nearList[index].pointMan,
+                  neearest_location: nearController.nearList[index].location,
+                  nearest_phone_no: nearController.nearList[index].phoneNo,
+                  nearest_website: nearController.nearList[index].website,
+                  nearest_lat: nearController.nearList[index].lat,
+                  nearest_lon: nearController.nearList[index].lon,
+                  isLatLon: nearController.nearList[index].isLatLon,
+                );
+              },
+            ),
           ),
         ),
       ),

@@ -17,6 +17,7 @@ import 'package:rcn/services/service_locator.dart';
 import 'controller/announcement_controller.dart';
 import 'controller/audio_msg_controller.dart';
 import 'controller/itinerary_controller.dart';
+import 'controller/nearest_rcn_controller.dart';
 import 'controller/seek_god_controller.dart';
 import 'controller/video_msg_controller.dart';
 import 'screens/about_rcn_screen.dart';
@@ -36,6 +37,7 @@ void main() async {
   Get.put(AudioMsgController());
   Get.put(VideoMsgController());
   Get.put(AnnouncementController());
+  Get.put(NearestRcnController());
 
   await setupServiceLocator();
   await FlutterDownloader.initialize(debug: debug);
