@@ -950,6 +950,7 @@ string action_go_back
 string action_go_forward
 string action_reload
 string action_share
+string androidx_startup
 string app_name
 string copy_toast_msg
 string default_notification_channel_name

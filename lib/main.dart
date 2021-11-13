@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 import 'package:rcn/component/bottom_nav.dart';
 import 'package:rcn/component/page_manager.dart';
@@ -16,6 +17,7 @@ import 'package:rcn/services/service_locator.dart';
 import 'controller/audio_msg_controller.dart';
 import 'controller/itinerary_controller.dart';
 import 'controller/seek_god_controller.dart';
+import 'controller/video_msg_controller.dart';
 import 'screens/about_rcn_screen.dart';
 import 'screens/give_n_partner_screen.dart';
 import 'screens/itestify_screen.dart';
@@ -31,9 +33,10 @@ void main() async {
   Get.put(SeekGodController());
   Get.put(ItineraryController());
   Get.put(AudioMsgController());
+  Get.put(VideoMsgController());
 
   await setupServiceLocator();
-  //await FlutterDownloader.initialize(debug: debug);
+  await FlutterDownloader.initialize(debug: debug);
 
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(

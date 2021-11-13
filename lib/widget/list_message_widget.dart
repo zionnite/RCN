@@ -7,6 +7,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/route_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rcn/controller/audio_msg_controller.dart';
 import 'package:rcn/screens/message_player_screen.dart';
 
 class ListMessageWidget extends StatefulWidget {
@@ -17,18 +18,24 @@ class ListMessageWidget extends StatefulWidget {
     required this.aud_title,
     required this.aud_id,
     required this.aud_album,
+    required this.user_id,
+    required this.isPlayListed,
   }) : super(key: key);
   String aud_image;
   String aud_link;
   String aud_title;
   String aud_id;
   String aud_album;
+  String user_id;
+  bool isPlayListed;
 
   @override
   _ListMessageWidgetState createState() => _ListMessageWidgetState();
 }
 
 class _ListMessageWidgetState extends State<ListMessageWidget> {
+  final audioMsgListController = AudioMsgController().getXID;
+
   late String _localPath;
   bool downloading = false;
   var progressString = "";
@@ -86,7 +93,20 @@ class _ListMessageWidgetState extends State<ListMessageWidget> {
                     "Audio Message has been saved into your device, enjoy!...",
                     Colors.black);
               }
-            } else if (value == 'Playlist') {}
+            } else if (value == 'Playlist') {
+              var toggle = await audioMsgListController.toggle_playlist(
+                  widget.user_id, widget.aud_id);
+
+              if (toggle == 'added') {
+                setState(() {
+                  widget.isPlayListed = true;
+                });
+              } else if (toggle == 'deleted') {
+                setState(() {
+                  widget.isPlayListed = false;
+                });
+              }
+            }
           },
           itemBuilder: (context) => [
             PopupMenuItem(
@@ -98,7 +118,9 @@ class _ListMessageWidgetState extends State<ListMessageWidget> {
               value: "Download",
             ),
             PopupMenuItem(
-              child: Text("Add to Playlist"),
+              child: (widget.isPlayListed)
+                  ? Text('Remove from Playlist')
+                  : Text("Add to Playlist"),
               value: "Playlist",
             ),
           ],
@@ -170,18 +192,14 @@ class _ListMessageWidgetState extends State<ListMessageWidget> {
       downloading = false;
       progressString = "Completed";
     });
-    print("Download completed");
+    showSnackBar(
+      'Congratulation',
+      'File Downloaded successfully',
+      Colors.green,
+    );
   }
 
   showSnackBar(String title, String msg, Color backgroundColor) {
-    // Get.snackbar(
-    //   title,
-    //   msg,
-    //   backgroundColor: backgroundColor,
-    //   colorText: Colors.white,
-    //   snackPosition: SnackPosition.BOTTOM,
-    // );
-
     Get.snackbar(
       title,
       msg,

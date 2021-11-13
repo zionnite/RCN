@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:rcn/controller/audio_msg_controller.dart';
+import 'package:rcn/screens/search_audio_message_screen.dart';
 import 'package:rcn/widget/list_message_widget.dart';
 
 class ListMessagesScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class _ListMessagesScreenState extends State<ListMessagesScreen> {
   late String searchTerm;
   bool _showStatus = false;
   late String _statusMsg;
-  var user_id = 1;
+  var user_id = 2;
   var current_page = 1;
   bool isLoading = false;
 
@@ -49,7 +50,6 @@ class _ListMessagesScreenState extends State<ListMessagesScreen> {
     }
   }
 
-  void searchAudioMessage() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +119,12 @@ class _ListMessagesScreenState extends State<ListMessagesScreen> {
                                 searchTermController.text = '';
                                 _showStatus = false;
                               });
-                              searchAudioMessage();
+
+                              Get.to(
+                                () => SearchAudioMessageScreen(
+                                  search_term: searchTerm,
+                                ),
+                              );
                             } else {
                               setState(() {
                                 setState(() {
@@ -167,9 +172,7 @@ class _ListMessagesScreenState extends State<ListMessagesScreen> {
                           if (index ==
                                   audioMsgListController.audioMsgList.length -
                                       1 &&
-                              audioMsgListController
-                                      .isMoreDataAvailable.value ==
-                                  true) {
+                              isLoading == true) {
                             return Center(
                               child: CircularProgressIndicator(),
                             );
@@ -192,6 +195,9 @@ class _ListMessagesScreenState extends State<ListMessagesScreen> {
                                 audioMsgListController.audioMsgList[index].id,
                             aud_album: audioMsgListController
                                 .audioMsgList[index].album,
+                            user_id: user_id.toString(),
+                            isPlayListed: audioMsgListController
+                                .audioMsgList[index].isPlayListed,
                           );
                         },
                       ),

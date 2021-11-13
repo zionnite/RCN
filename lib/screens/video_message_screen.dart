@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/route_manager.dart';
+import 'package:get/state_manager.dart';
+import 'package:rcn/controller/video_msg_controller.dart';
 import 'package:rcn/widget/video_message_player_widget.dart';
 
 class VideoMessage extends StatefulWidget {
@@ -13,17 +15,49 @@ class VideoMessage extends StatefulWidget {
 }
 
 class _VideoMessageState extends State<VideoMessage> {
+  final videoMsgListController = VideoMsgController().getXID;
+  late ScrollController _controller;
+
   TextEditingController searchTermController = TextEditingController();
   late String searchTerm;
   bool _showStatus = false;
   late String _statusMsg;
-  var _value;
+  var user_id = 1;
+  var current_page = 1;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    videoMsgListController.getDetails(user_id);
+    _controller = ScrollController()..addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      setState(() {
+        isLoading = true;
+        current_page++;
+      });
+
+      //
+
+      videoMsgListController.getMoreDetail(current_page, user_id);
+
+      // Future.delayed(new Duration(seconds: 4), () {
+      //   setState(() {
+      //     isLoading = false;
+      //   });
+      // });
+    }
+  }
 
   void searchVideoMessage() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        controller: _controller,
         child: Column(
           children: [
             Stack(
@@ -125,30 +159,40 @@ class _VideoMessageState extends State<VideoMessage> {
               ),
               child: Column(
                 children: [
-                  ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    children: [
-                      VideoMessagePlayerWidget(
-                        vid_image:
-                            'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-                        vid_link:
-                            'https://rcnsermons.org/2021%20updload/01%20January%202021%20-%20Prayer%20And%20Fasting/08%20Inner%20Knowledge%20Of%20Reckoning%20-%20%28Apst.%20Arome%20Osayi%29%20-%20Wed.%2014th%202021.mp3',
-                        vid_title: 'January 2021 - Prayer and Fasting',
-                        //vid_id: '1',
-                        // vid_album: 'Ministration',
-                      ),
-                      VideoMessagePlayerWidget(
-                        vid_image:
-                            'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-                        vid_link:
-                            'https://rcnsermons.org/2021%20updload/01%20January%202021%20-%20Prayer%20And%20Fasting/08%20Inner%20Knowledge%20Of%20Reckoning%20-%20%28Apst.%20Arome%20Osayi%29%20-%20Wed.%2014th%202021.mp3',
-                        vid_title: 'Feburar 2021 - Prayer and Fasting',
-                        // vid_id: '2',
-                        // vid_album: 'Ministration',
-                      ),
-                    ],
+                  Obx(
+                    () => ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: videoMsgListController.videoMsgList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index ==
+                                videoMsgListController.videoMsgList.length -
+                                    1 &&
+                            videoMsgListController.isMoreDataAvailable.value ==
+                                true) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (videoMsgListController.videoMsgList[index].id ==
+                            null) {
+                          videoMsgListController.isMoreDataAvailable.value =
+                              false;
+                          return Container();
+                        }
+                        return VideoMessagePlayerWidget(
+                          vid_image:
+                              videoMsgListController.videoMsgList[index].image,
+                          vid_link:
+                              videoMsgListController.videoMsgList[index].link,
+                          vid_title:
+                              videoMsgListController.videoMsgList[index].title,
+                          vid_id: videoMsgListController.videoMsgList[index].id,
+                          // vid_album: 'Ministration',
+                        );
+                      },
+                    ),
                   ),
                   //SelectedOptions(item_selected: _selectedChoices),
                 ],
@@ -159,4 +203,6 @@ class _VideoMessageState extends State<VideoMessage> {
       ),
     );
   }
+
+
 }

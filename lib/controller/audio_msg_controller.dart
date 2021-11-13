@@ -12,6 +12,7 @@ class AudioMsgController extends GetxController {
   var isMoreDataAvailable = true.obs;
 
   var audioMsgList = <AudioMsg>[].obs;
+  var searchaudioMsgList = <AudioMsg>[].obs;
 
   @override
   void onInit() {
@@ -39,15 +40,12 @@ class AudioMsgController extends GetxController {
   }
 
   void getMoreDetail(var page_num, var user_id) async {
-    print('userid ${user_id}');
     var seeker = await ApiServices.getAudioMsg(page_num, user_id);
-    print('Scroll fire+++++');
 
     if (seeker != null) {
       isMoreDataAvailable(true);
       audioMsgList.addAll(seeker);
     } else {
-      print('Scroll fire');
       isMoreDataAvailable(false);
       showSnackBar('Oops!', "No more items", Colors.red);
     }
@@ -57,12 +55,70 @@ class AudioMsgController extends GetxController {
     }
   }
 
+  void fetch_search_page(var page_num, var search_term, var user_id) async {
+    var seeker =
+        await ApiServices.getSearchAudioMsg(page_num, search_term, user_id);
+
+    if (seeker != null) {
+      isMoreDataAvailable(true);
+      searchaudioMsgList.clear();
+      searchaudioMsgList.addAll(seeker);
+    } else {
+      isMoreDataAvailable(false);
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+
+    if (isMoreDataAvailable == false) {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+  }
+
+  void fetch_search_page_by_pagination(
+      var page_num, var search_term, var user_id) async {
+    var seeker =
+        await ApiServices.getSearchAudioMsg(page_num, search_term, user_id);
+
+    if (seeker != null) {
+      isMoreDataAvailable(true);
+      searchaudioMsgList.addAll(seeker);
+    } else {
+      isMoreDataAvailable(false);
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+
+    if (isMoreDataAvailable == false) {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+  }
+
+  Future<String> toggle_playlist(var user_id, var audio_id) async {
+    var seeker = await ApiServices.toggleAudioPlaylist(user_id, audio_id);
+
+    if (seeker == "deleted") {
+      showSnackBar("Removed", "Audio removed from your playlist", Colors.red);
+    } else if (seeker == "un_deleted") {
+      showSnackBar("Oops!!", "could not removed Audio from your playlist",
+          Colors.deepOrange);
+    } else if (seeker == "added") {
+      showSnackBar("Success", "Audio added to your playlist", Colors.green);
+    } else if (seeker == "un_added") {
+      showSnackBar("Oops!!", "Audio could not be added to your playlist",
+          Colors.deepOrange);
+    } else {
+      showSnackBar("Oops!!", "Unidentified error occur", Colors.deepOrange);
+    }
+
+    return seeker;
+    //return seeker;
+  }
+
   showSnackBar(String title, String msg, Color backgroundColor) {
     Get.snackbar(
       title,
       msg,
       backgroundColor: backgroundColor,
       colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
     );
   }
 }
