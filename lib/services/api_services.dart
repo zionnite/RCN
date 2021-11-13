@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:rcn/model/announcement_model.dart';
 import 'package:rcn/model/audio_msg_model.dart';
+import 'package:rcn/model/itestify_model.dart';
 import 'package:rcn/model/itinerary_model.dart';
 import 'package:rcn/model/nearest_rcn_model.dart';
 import 'package:rcn/model/seek_god.dart';
@@ -23,6 +24,8 @@ class ApiServices {
   static String _toggle_video_playlist = 'toggle_video_playlist';
   static String _announcement = 'announcement';
   static String _nearest_rcn = 'nearest_rcn';
+  static String _itestify = 'itestify';
+  static String _toggle_testimony = 'toggle_testimony';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -166,6 +169,30 @@ class ApiServices {
     }
   }
 
+  static Future<List<ItestifyModel>> getItestify(
+      var page_num, var user_id) async {
+    try {
+      final result = await client
+          .get(Uri.parse('$_mybaseUrl$_itestify/$page_num/$user_id'));
+      if (result.statusCode == 200) {
+        final response = itestifyModelFromJson(result.body);
+        return response;
+      } else {
+        return Future.error('Unwanted status Code');
+      }
+    } catch (ex) {
+      return Future.error(ex.toString());
+    }
+  }
+
+  static Future<String> toggleTestimonylist(var user_id, var test_id) async {
+    final response = await http
+        .get(Uri.parse('$_mybaseUrl$_toggle_testimony/$user_id/$test_id'));
+    var body = response.body;
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
+  }
   // Future<List<UserProfile>> searchUsersByPage(
   //     String search_term, int current_page, String my_id) async {
   //   final uri = Uri.parse('$mainUrl/search_users/$current_page/$my_id');

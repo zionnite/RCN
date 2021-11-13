@@ -1,5 +1,6 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:rcn/controller/itestify_controller.dart';
 
 class ItestifyWidget extends StatefulWidget {
   ItestifyWidget({
@@ -10,19 +11,24 @@ class ItestifyWidget extends StatefulWidget {
     required this.test_counter,
     required this.test_body,
     required this.isTestLike,
+    required this.user_id,
+    required this.test_id,
   }) : super(key: key);
   String test_img;
   String test_full_name;
   String test_user_name;
-  String test_counter;
+  int test_counter;
   String test_body;
   bool isTestLike;
+  String test_id;
+  String user_id;
 
   @override
   _ItestifyWidgetState createState() => _ItestifyWidgetState();
 }
 
 class _ItestifyWidgetState extends State<ItestifyWidget> {
+  final itestListController = ItestifyController().getXID;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -112,14 +118,34 @@ class _ItestifyWidgetState extends State<ItestifyWidget> {
               children: [
                 (widget.isTestLike)
                     ? IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          var toggle = await itestListController.toggle_testify(
+                              widget.user_id, widget.test_id);
+
+                          if (toggle == "deleted") {
+                            setState(() {
+                              widget.isTestLike = false;
+                              widget.test_counter--;
+                            });
+                          }
+                        },
                         icon: Icon(
                           Icons.thumb_up,
                           color: Colors.red,
                         ),
                       )
                     : IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          var toggle = await itestListController.toggle_testify(
+                              widget.user_id, widget.test_id);
+
+                          if (toggle == "added") {
+                            setState(() {
+                              widget.isTestLike = true;
+                              widget.test_counter++;
+                            });
+                          }
+                        },
                         icon: Icon(
                           Icons.thumb_up_outlined,
                           color: Colors.red,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:rcn/controller/itestify_controller.dart';
 import 'package:rcn/widget/itestify_widget.dart';
 import 'package:speed_dial_fab/speed_dial_fab.dart';
 
@@ -10,6 +12,38 @@ class ItestifyScreen extends StatefulWidget {
 }
 
 class _ItestifyScreenState extends State<ItestifyScreen> {
+  final itestListController = ItestifyController().getXID;
+  late ScrollController _controller;
+  var user_id = 2;
+  var current_page = 1;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    itestListController.getDetails(current_page, user_id);
+    _controller = ScrollController()..addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      setState(() {
+        isLoading = true;
+        current_page++;
+      });
+
+      //
+
+      itestListController.getMoreDetail(current_page, user_id);
+
+      Future.delayed(new Duration(seconds: 4), () {
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +57,6 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
               'iTestify',
               style: TextStyle(),
             ),
-            // IconButton(
-            //   onPressed: () {},
-            //   icon: Icon(
-            //     Icons.add,
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -48,46 +76,36 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
         primaryForegroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              children: [
-                ItestifyWidget(
-                  test_img:
-                      'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-                  test_full_name: 'Nosakhare Atekha Endurance',
-                  test_user_name: 'zionnite',
-                  test_counter: '10',
-                  test_body:
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-                  isTestLike: true,
-                ),
-                ItestifyWidget(
-                  test_img:
-                      'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-                  test_full_name: 'Jessica Margret',
-                  test_user_name: 'meggie',
-                  test_counter: '1000',
-                  test_body:
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-                  isTestLike: false,
-                ),
-                ItestifyWidget(
-                  test_img:
-                      'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-                  test_full_name: 'Edobor Elubor',
-                  test_user_name: 'elobor',
-                  test_counter: '4',
-                  test_body:
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-                  isTestLike: true,
-                ),
-              ],
-            )
-          ],
+        controller: _controller,
+        child: Obx(
+          () => ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemCount: itestListController.itestList.length,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == itestListController.itestList.length - 1 &&
+                  itestListController.isMoreDataAvailable.value == true) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (itestListController.itestList[index].id == null) {
+                itestListController.isMoreDataAvailable.value = false;
+                return Container();
+              }
+              return ItestifyWidget(
+                test_img: itestListController.itestList[index].userImage,
+                test_full_name: itestListController.itestList[index].fullName,
+                test_user_name: itestListController.itestList[index].userName,
+                test_counter: itestListController.itestList[index].counter,
+                test_body: itestListController.itestList[index].body,
+                isTestLike: itestListController.itestList[index].isTeskLike,
+                test_id: itestListController.itestList[index].id,
+                user_id: user_id.toString(),
+              );
+            },
+          ),
         ),
       ),
     );
