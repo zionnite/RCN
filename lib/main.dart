@@ -14,6 +14,7 @@ import 'package:rcn/screens/profile_screen.dart';
 import 'package:rcn/screens/speak_to_someone_screen.dart';
 import 'package:rcn/services/service_locator.dart';
 
+import 'controller/announcement_controller.dart';
 import 'controller/audio_msg_controller.dart';
 import 'controller/itinerary_controller.dart';
 import 'controller/seek_god_controller.dart';
@@ -34,6 +35,7 @@ void main() async {
   Get.put(ItineraryController());
   Get.put(AudioMsgController());
   Get.put(VideoMsgController());
+  Get.put(AnnouncementController());
 
   await setupServiceLocator();
   await FlutterDownloader.initialize(debug: debug);

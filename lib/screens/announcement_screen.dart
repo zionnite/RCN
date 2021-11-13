@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:rcn/controller/announcement_controller.dart';
 import 'package:rcn/widget/announcement_widget.dart';
 
 class AnnouncementScreen extends StatefulWidget {
@@ -9,6 +11,8 @@ class AnnouncementScreen extends StatefulWidget {
 }
 
 class _AnnouncementScreenState extends State<AnnouncementScreen> {
+  final anListController = AnnouncementController().getXID;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,26 +22,31 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
         title: Text('Announcement'),
       ),
       body: SingleChildScrollView(
-        child: ListView(
-          shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          children: [
-            AnnouncementWidget(
-              an_img:
-                  'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-              an_body:
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-              an_date: 'Dec 22, 2021',
-            ),
-            AnnouncementWidget(
-              an_img:
-                  'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
-              an_body:
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-              an_date: 'Jun 01, 2022',
-            ),
-          ],
+        controller: anListController.announcementScrollController,
+        child: Obx(
+          () => ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemCount: anListController.annList.length,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == anListController.annList.length - 1 &&
+                  anListController.isMoreDataAvailable.value == true) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (anListController.annList[index].id == null) {
+                anListController.isMoreDataAvailable.value = false;
+                return Container();
+              }
+              return AnnouncementWidget(
+                an_img: anListController.annList[index].image,
+                an_body: anListController.annList[index].body,
+                an_date: anListController.annList[index].date,
+              );
+            },
+          ),
         ),
       ),
     );

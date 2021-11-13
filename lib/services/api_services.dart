@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:rcn/model/announcement_model.dart';
 import 'package:rcn/model/audio_msg_model.dart';
 import 'package:rcn/model/itinerary_model.dart';
 import 'package:rcn/model/seek_god.dart';
@@ -19,6 +20,7 @@ class ApiServices {
   static String _video_msg = 'video_msg';
   static String _search_video_msg = 'search_video';
   static String _toggle_video_playlist = 'toggle_video_playlist';
+  static String _announcement = 'announcement';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -85,22 +87,6 @@ class ApiServices {
     }
   }
 
-  // static Future<List<AudioMsg>> getSearchAudioMsg(
-  //     var page_num, var search_term, var user_id) async {
-  //   try {
-  //     final result = await client
-  //         .get(Uri.parse('$_mybaseUrl$_audio_msg/$page_num/$user_id'));
-  //     if (result.statusCode == 200) {
-  //       final response = audioMsgFromJson(result.body);
-  //       return response;
-  //     } else {
-  //       return Future.error('Unwanted status Code');
-  //     }
-  //   } catch (ex) {
-  //     return Future.error(ex.toString());
-  //   }
-  // }
-
   static Future<List<AudioMsg>> getSearchAudioMsg(
       var current_page, String search_term, var user_id) async {
     final uri =
@@ -156,6 +142,21 @@ class ApiServices {
     final j = json.decode(body) as Map<String, dynamic>;
     String status = j['status'];
     return status;
+  }
+
+  static Future<List<AnnouncementModel>> getAnnouncement(var page_num) async {
+    try {
+      final result =
+          await client.get(Uri.parse('$_mybaseUrl$_announcement/$page_num'));
+      if (result.statusCode == 200) {
+        final an = announcementModelFromJson(result.body);
+        return an;
+      } else {
+        return Future.error('Unwanted status Code');
+      }
+    } catch (ex) {
+      return Future.error(ex.toString());
+    }
   }
 
   // Future<List<UserProfile>> searchUsersByPage(
