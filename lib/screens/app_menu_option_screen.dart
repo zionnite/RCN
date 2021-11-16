@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:rcn/controller/player_controller.dart';
-import 'package:rcn/controller/slider_controller.dart';
 import 'package:rcn/screens/announcement_screen.dart';
 import 'package:rcn/screens/give_n_partner_screen.dart';
 import 'package:rcn/screens/itestify_screen.dart';
@@ -20,9 +18,6 @@ class AppMenuOption extends StatefulWidget {
 }
 
 class _AppMenuOptionState extends State<AppMenuOption> {
-  final sliderCont = SliderController().getXID;
-  final playerCont = PlayerController().getXID;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
