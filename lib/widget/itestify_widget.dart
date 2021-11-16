@@ -1,5 +1,6 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rcn/controller/itestify_controller.dart';
 
 class ItestifyWidget extends StatefulWidget {
@@ -81,11 +82,64 @@ class _ItestifyWidgetState extends State<ItestifyWidget> {
                     Icons.more_vert_sharp,
                   ),
                   enabled: true,
-                  onSelected: (value) {
-                    setState(() {
-                      // _value = value;
-                      //print(_value);
-                    });
+                  onSelected: (value) async {
+                    if (value == "Report") {
+                      Get.bottomSheet(
+                        Container(
+                          child: Wrap(
+                            children: <Widget>[
+                              ListTile(
+                                leading: Icon(Icons.ac_unit_outlined),
+                                title: Text('Offensive'),
+                                onTap: () async {
+                                  await itestListController.report(
+                                    widget.user_id,
+                                    widget.test_id,
+                                    'Offensive',
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.ac_unit_outlined),
+                                title: Text('Scam'),
+                                onTap: () async {
+                                  await itestListController.report(
+                                    widget.user_id,
+                                    widget.test_id,
+                                    'Scam',
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.ac_unit_outlined),
+                                title: Text('Not In-line with Our Privacy'),
+                                onTap: () async {
+                                  await itestListController.report(
+                                    widget.user_id,
+                                    widget.test_id,
+                                    'Term_violation',
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                height: 80,
+                              ),
+                            ],
+                          ),
+                        ),
+                        backgroundColor: Colors.white,
+                      );
+                    } else if (value == "Block") {
+                      await itestListController.block_user(
+                        widget.user_id,
+                        widget.test_id,
+                      );
+                    } else if (value == "Delete") {
+                      await itestListController.delete(
+                        widget.user_id,
+                        widget.test_id,
+                      );
+                    }
                   },
                   itemBuilder: (context) => [
                     PopupMenuItem(
@@ -95,6 +149,10 @@ class _ItestifyWidgetState extends State<ItestifyWidget> {
                     PopupMenuItem(
                       child: Text("Block User"),
                       value: "Block",
+                    ),
+                    PopupMenuItem(
+                      child: Text("Delete For Me"),
+                      value: "Delete",
                     ),
                   ],
                 ),

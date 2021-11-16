@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:rcn/controller/itestify_controller.dart';
+import 'package:rcn/util.dart';
 import 'package:rcn/widget/itestify_widget.dart';
 import 'package:speed_dial_fab/speed_dial_fab.dart';
 
@@ -17,6 +19,9 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
   var user_id = 2;
   var current_page = 1;
   bool isLoading = false;
+  bool isFab = false;
+  bool isSubmitting = false;
+  late String msg;
 
   @override
   void initState() {
@@ -112,6 +117,101 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
   }
 
   callBottomSheet() {
-    print('Sheet Called');
+    setState(() {
+      isFab = true;
+    });
+    Get.bottomSheet(
+      Wrap(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+              child: TextField(
+                maxLines: 8,
+                onChanged: (value) async {
+                  setState(() {
+                    msg = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: "Enter your text here ...",
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.red, //this has no effect
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 35,
+          ),
+          GestureDetector(
+            onTap: () async {
+              setState(() {
+                isSubmitting = true;
+              });
+              await itestListController.add_testimony(user_id, msg);
+              Future.delayed(new Duration(seconds: 4), () {
+                setState(() {
+                  isSubmitting = false;
+                });
+              });
+            },
+            child: (isSubmitting)
+                ? CircularProgressIndicator()
+                : Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: primaryColorLight,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    color: Colors.red,
+                    elevation: 3,
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      // margin: const EdgeInsets.only(bottom: 24.0),
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: Text(
+                          'Share Testimony',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+          SizedBox(
+            height: 85,
+          ),
+        ],
+      ),
+      // backgroundColor: Colors.white,
+      isDismissible: true,
+    );
+  }
+
+  showSnackBar(String title, String msg, Color backgroundColor) {
+    Get.snackbar(
+      title,
+      msg,
+      backgroundColor: backgroundColor,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 }

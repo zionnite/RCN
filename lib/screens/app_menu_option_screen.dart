@@ -10,7 +10,6 @@ import 'package:rcn/screens/nearest_rcn_screen.dart';
 import 'package:rcn/screens/profile_screen.dart';
 import 'package:rcn/screens/speak_to_someone_screen.dart';
 import 'package:rcn/screens/video_message_screen.dart';
-import 'package:rcn/screens/your_audio_playlist_screen.dart';
 import 'package:rcn/widget/app_title_widget.dart';
 
 class AppMenuOption extends StatefulWidget {
@@ -42,32 +41,6 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                     physics: ClampingScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Get.to(
-                            () => YourAudioPlaylist(),
-                          );
-                        },
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.audiotrack,
-                            color: Colors.redAccent,
-                          ),
-                          title: Text(
-                            'My Audio Playlist',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            'Listen and Download Audio Message',
-                          ),
-                          trailing: Icon(
-                            Icons.chevron_right_outlined,
-                            color: Colors.redAccent,
-                          ),
-                        ),
-                      ),
                       InkWell(
                         onTap: () {
                           Get.to(

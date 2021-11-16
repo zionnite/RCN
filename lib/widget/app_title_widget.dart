@@ -16,31 +16,8 @@ class appTitleWidget extends StatelessWidget {
               child: new Container(
                 padding: new EdgeInsets.only(
                     top: MediaQuery.of(context).padding.top),
-                child: new Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 0.0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: InkWell(
-                      onTap: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        } else {
-                          Navigator.popAndPushNamed(context, toNav);
-                        }
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                child: Container(
+                  height: 70,
                 ),
                 decoration: new BoxDecoration(
                   gradient: new LinearGradient(colors: [

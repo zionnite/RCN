@@ -74,6 +74,87 @@ class ItestifyController extends GetxController {
     //return seeker;
   }
 
+  Future<String> add_testimony(var user_id, var msg) async {
+    var seeker = await ApiServices.submitTestimony(user_id, msg);
+
+    if (seeker == "success") {
+      showSnackBar("Success", "Submitted successfully, awaiting staff approval",
+          Colors.green);
+    } else if (seeker == "error_1" || seeker == "error_2") {
+      showSnackBar(
+          "Oops!!", "Database busy, please try again later!", Colors.red);
+    } else {
+      showSnackBar("Oops!!", "Unidentified error occur", Colors.deepOrange);
+    }
+
+    return seeker;
+    //return seeker;
+  }
+
+  Future<String> report(var user_id, var test_id, var reason) async {
+    var seeker = await ApiServices.report_testimony(user_id, test_id, reason);
+
+    if (seeker == "success") {
+      showSnackBar(
+          "Success",
+          "Report Submitted, our staff will act on it accordingly",
+          Colors.green);
+    } else if (seeker == "fail_01") {
+      showSnackBar(
+          "Oops!!", "Database busy, please try again later!", Colors.red);
+    } else if (seeker == "fail_02") {
+      showSnackBar(
+          "Oops!!",
+          "You have already, submitted this post for review, please hold while we looked into it!",
+          Colors.red);
+    } else {
+      showSnackBar("Oops!!", "Unidentified error occur", Colors.deepOrange);
+    }
+
+    return seeker;
+    //return seeker;
+  }
+
+  Future<String> block_user(var user_id, var test_id) async {
+    var seeker = await ApiServices.block_test_user(user_id, test_id);
+
+    if (seeker == "success") {
+      showSnackBar("Success",
+          "You will no longer see any write-up from this user!", Colors.green);
+    } else if (seeker == "fail_01") {
+      showSnackBar("Oops!!", "You Can'\t block yourself", Colors.red);
+    } else if (seeker == "fail") {
+      showSnackBar(
+          "Oops!!",
+          "Database busy, please try again later OR you have already block user!",
+          Colors.deepOrange);
+    } else if (seeker == "already") {
+      showSnackBar("Oops!!", "You have already block this user!", Colors.red);
+    } else {
+      showSnackBar("Oops!!", "Unidentified error occur", Colors.deepOrange);
+    }
+
+    return seeker;
+  }
+
+  Future<String> delete(var user_id, var test_id) async {
+    var seeker = await ApiServices.delete_test(user_id, test_id);
+
+    if (seeker == "true") {
+      showSnackBar("Success", "Post Deleted for you!", Colors.green);
+    } else if (seeker == "false") {
+      showSnackBar(
+          "Oops!!", "Database busy, please try again later", Colors.black);
+    } else if (seeker == "already") {
+      showSnackBar("Oops!!", "This Post has already be deleted for you!",
+          Colors.deepOrange);
+    } else {
+      showSnackBar("Oops!!", "Unidentified error occur", Colors.deepOrange);
+    }
+
+    return seeker;
+  }
+
   showSnackBar(String title, String msg, Color backgroundColor) {
     Get.snackbar(
       title,

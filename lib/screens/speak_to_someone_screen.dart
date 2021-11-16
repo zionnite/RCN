@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rcn/controller/send_message_controller.dart';
 
 class SpeakToSomeoneScreen extends StatefulWidget {
   const SpeakToSomeoneScreen({Key? key}) : super(key: key);
@@ -10,6 +11,11 @@ class SpeakToSomeoneScreen extends StatefulWidget {
 
 class _SpeakToSomeoneScreenState extends State<SpeakToSomeoneScreen> {
   TextEditingController messageController = TextEditingController();
+  final sendMsgController = SendMessageController().getXID;
+  String email = "zionnite@rcn.org";
+  String name = "Zionnite";
+  late String msg;
+  bool isSubmitting = false;
 
   @override
   void initState() {
@@ -58,38 +64,59 @@ class _SpeakToSomeoneScreenState extends State<SpeakToSomeoneScreen> {
                   elevation: 5.0,
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   child: TextField(
-                    onChanged: null,
-                    maxLines: null,
-                    controller: messageController,
-                    style: TextStyle(),
-                    cursorColor: Colors.black,
+                    maxLines: 8,
+                    onChanged: (value) async {
+                      setState(() {
+                        msg = value;
+                        //messageController.text = '';
+                      });
+                    },
+                    //controller: messageController,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 32.0, vertical: 18.0),
-                      border: InputBorder.none,
-                      hintText: 'Enter Message',
-                      errorText: 'snapshot.error',
+                      hintText: "Enter your text here ...",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red, //this has no effect
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(250),
-              ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 18.0, horizontal: 50),
-                child: Text(
-                  'Send Message',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+            InkWell(
+              onTap: () async {
+                setState(() {
+                  isSubmitting = true;
+                });
+
+                await sendMsgController.send(email, name, msg);
+                Future.delayed(new Duration(seconds: 2), () async {
+                  setState(() {
+                    isSubmitting = false;
+                  });
+                });
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(250),
                 ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 18.0, horizontal: 50),
+                  child: (isSubmitting)
+                      ? CircularProgressIndicator()
+                      : Text(
+                          'Send Message',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ),
+                elevation: 5.0,
               ),
-              elevation: 5.0,
             )
           ],
         ),

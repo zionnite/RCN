@@ -26,6 +26,11 @@ class ApiServices {
   static String _nearest_rcn = 'nearest_rcn';
   static String _itestify = 'itestify';
   static String _toggle_testimony = 'toggle_testimony';
+  static String _add_itestify = 'add_itestify';
+  static String _report_test = 'itestify_report_problem';
+  static String _itestify_block_user = 'itestify_block_user';
+  static String _itestify_delete = 'delete_itestify_for_me';
+  static String _send_message = 'send_private_message';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -193,6 +198,66 @@ class ApiServices {
     String status = j['status'];
     return status;
   }
+
+  static Future<String> submitTestimony(var user_id, var msg) async {
+    final uri = Uri.parse('$_mybaseUrl$_add_itestify');
+
+    var response = await http.post(uri, body: {
+      'message': msg,
+      'user_id': user_id.toString(),
+    });
+
+    var body = response.body;
+
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
+  }
+
+  static Future<String> report_testimony(
+      var user_id, var test_id, var report_type) async {
+    final response = await http.get(
+        Uri.parse('$_mybaseUrl$_report_test/$test_id/$report_type/$user_id'));
+    var body = response.body;
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
+  }
+
+  static Future<String> block_test_user(var user_id, var test_id) async {
+    final response = await http
+        .get(Uri.parse('$_mybaseUrl$_itestify_block_user/$test_id/$user_id'));
+    var body = response.body;
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
+  }
+
+  static Future<String> delete_test(var user_id, var test_id) async {
+    final response = await http
+        .get(Uri.parse('$_mybaseUrl$_itestify_delete/$test_id/$user_id'));
+    var body = response.body;
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
+  }
+
+  static Future<bool> submitMessage(var email, var name, var msg) async {
+    final uri = Uri.parse('$_mybaseUrl$_send_message');
+
+    var response = await http.post(uri, body: {
+      'message': msg,
+      'email': email,
+      'name': name,
+    });
+
+    var body = response.body;
+
+    final j = json.decode(body) as Map<String, dynamic>;
+    bool status = j['status'];
+    return status;
+  }
+
   // Future<List<UserProfile>> searchUsersByPage(
   //     String search_term, int current_page, String my_id) async {
   //   final uri = Uri.parse('$mainUrl/search_users/$current_page/$my_id');

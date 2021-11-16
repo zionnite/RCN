@@ -20,6 +20,7 @@ import 'controller/itestify_controller.dart';
 import 'controller/itinerary_controller.dart';
 import 'controller/nearest_rcn_controller.dart';
 import 'controller/seek_god_controller.dart';
+import 'controller/send_message_controller.dart';
 import 'controller/video_msg_controller.dart';
 import 'screens/about_rcn_screen.dart';
 import 'screens/give_n_partner_screen.dart';
@@ -40,6 +41,7 @@ void main() async {
   Get.put(AnnouncementController());
   Get.put(NearestRcnController());
   Get.put(ItestifyController());
+  Get.put(SendMessageController());
 
   await setupServiceLocator();
   await FlutterDownloader.initialize(debug: debug);
