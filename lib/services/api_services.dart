@@ -9,6 +9,7 @@ import 'package:rcn/model/nearest_rcn_model.dart';
 import 'package:rcn/model/seek_god.dart';
 import 'package:rcn/model/slider.dart';
 import 'package:rcn/model/video_msg_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
   static var client = http.Client();
@@ -31,6 +32,9 @@ class ApiServices {
   static String _itestify_block_user = 'itestify_block_user';
   static String _itestify_delete = 'delete_itestify_for_me';
   static String _send_message = 'send_private_message';
+  static String _login_authorization = 'login_authorization';
+  static String _signup_authorization = 'signup_authorization';
+  static String _reset_password = 'reset_password';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -258,275 +262,114 @@ class ApiServices {
     return status;
   }
 
-  // Future<List<UserProfile>> searchUsersByPage(
-  //     String search_term, int current_page, String my_id) async {
-  //   final uri = Uri.parse('$mainUrl/search_users/$current_page/$my_id');
-  //
-  //   var response = await http.post(uri, body: {
-  //     'search_term': search_term,
-  //   });
-  //
-  //   return userProfileFromJson(response.body);
-  // }
-  //
-  // Future<String> userAuthLogin(String email, String pass) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final uri = Uri.parse('$mainUrl/login_authorization');
-  //
-  //   var response = await http.post(uri, body: {
-  //     'email': email,
-  //     'password': pass,
-  //   });
-  //
-  //   Map<String, dynamic> j = json.decode(response.body);
-  //   String status = j['status'];
-  //   String status_msg = j['status_msg'];
-  //
-  //   if (status == 'success') {
-  //     String system_id = j['system_id'];
-  //     String user_id = j['user_id'];
-  //     String full_name = j['full_name'];
-  //     String age = j['age'];
-  //     String sex = j['sex'];
-  //     String emailAddres = j['email'];
-  //     String phone_no = j['phone_no'];
-  //     String user_img = j['user_img'];
-  //     int following = j['following'];
-  //     int followers = j['followers'];
-  //
-  //     prefs.setString('system_id', system_id);
-  //     prefs.setString('user_id', user_id);
-  //     prefs.setString('full_name', full_name);
-  //     prefs.setString('age', age);
-  //     prefs.setString('sex', sex);
-  //     prefs.setString('email', emailAddres);
-  //     prefs.setString('phone_no', phone_no);
-  //     prefs.setString('user_img', user_img);
-  //     prefs.setBool('isUserLogin', true);
-  //     prefs.setBool('profile_updated', false);
-  //
-  //     return status;
-  //   } else if (status == 'fail_01' ||
-  //       status == 'fail_02' ||
-  //       status == 'fail_03' ||
-  //       status == 'fail_04') {
-  //     return status;
-  //   }
-  // }
-  //
-  // Future<String> userAuthSignup(String email, String pass) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final uri = Uri.parse('$mainUrl/signup_authorization');
-  //
-  //   var response = await http.post(uri, body: {
-  //     'email': email,
-  //     'password': pass,
-  //   });
-  //
-  //   Map<String, dynamic> j = json.decode(response.body);
-  //   String status = j['status'];
-  //   String status_msg = j['status_msg'];
-  //
-  //   if (status == 'success') {
-  //     String system_id = j['system_id'];
-  //     String user_id = j['user_id'];
-  //     String full_name = j['full_name'];
-  //     String age = j['age'];
-  //     String sex = j['sex'];
-  //     String emailAddres = j['email'];
-  //     String phone_no = j['phone_no'];
-  //     String user_img = j['user_img'];
-  //     int following = j['following'];
-  //     int followers = j['followers'];
-  //
-  //     prefs.setString('system_id', system_id);
-  //     prefs.setString('user_id', user_id);
-  //     prefs.setString('full_name', full_name);
-  //     prefs.setString('age', age);
-  //     prefs.setString('sex', sex);
-  //     prefs.setString('email', emailAddres);
-  //     prefs.setString('phone_no', phone_no);
-  //     prefs.setString('user_img', user_img);
-  //     //prefs.setBool('isUserLogin', true);
-  //     prefs.setBool('profile_updated', false);
-  //
-  //     return status;
-  //   } else if (status == 'fail_01' ||
-  //       status == 'fail_02' ||
-  //       status == 'fail_03' ||
-  //       status == 'fail_04') {
-  //     return status;
-  //   }
-  // }
-  //
-  // Future<String> userAuthRest(String email) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final uri = Uri.parse('$mainUrl/reset_password');
-  //
-  //   // print(email);
-  //   var response = await http.post(uri, body: {
-  //     'email': email,
-  //   });
-  //
-  //   // print(response.body);
-  //   Map<String, dynamic> j = json.decode(response.body);
-  //   String status = j['status'];
-  //
-  //   if (status == 'success') {
-  //     return status;
-  //   } else if (status == 'fail_01' ||
-  //       status == 'fail_02' ||
-  //       status == 'fail_03' ||
-  //       status == 'fail_04') {
-  //     return status;
-  //   }
-  // }
-  //
-  // Future<bool> updateUserProfile(
-  //     {String name,
-  //       String age,
-  //       String phone,
-  //       File profileImg,
-  //       String my_id}) async {
-  //   //return forumCommentFromJson(response.body);
-  //
-  //   final uri = Uri.parse('$mainUrl/update_profile/$my_id');
-  //   var request = http.MultipartRequest('POST', uri);
-  //   request.fields['full_name'] = name;
-  //   request.fields['age'] = age;
-  //   request.fields['phone'] = phone;
-  //
-  //   var profileImage =
-  //   await http.MultipartFile.fromPath('profile_image', profileImg.path);
-  //   request.files.add(profileImage);
-  //
-  //   var respond = await request.send();
-  //   if (respond.statusCode == 200) {
-  //     var new_user_img = 'https://api.osherwomen.com/user_img/$my_id' +
-  //         '/' +
-  //         profileImage.filename;
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     prefs.setString('full_name', name);
-  //     prefs.setString('age', age);
-  //     prefs.setString('phone_no', phone);
-  //     prefs.setString('user_img', new_user_img);
-  //     prefs.setBool('profile_updated', true);
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-  // Future<List<ForumComment>> commentReportProblem(
-  //     String id,
-  //     String report_type,
-  //     BuildContext context,
-  //     String forum_id,
-  //     String user,
-  //     ) async {
-  //   final response = await http.get(Uri.parse(
-  //       '$mainUrl/comment_report_problem/$forum_id/$id/$report_type/$user'));
-  //   var body = response.body;
-  //
-  //   // print(forum_id);
-  //   // print(id);
-  //   Map<String, dynamic> j = json.decode(body);
-  //   String status = j['status'];
-  //   String status_msg = j['status_msg'];
-  //
-  //   if (status == 'true') {
-  //     final snacksBar = SnackBar(
-  //       content: Text('Comment has been Submitted for Review!'),
-  //       //action: SnackBarAction(),
-  //     );
-  //     ScaffoldMessenger.of(context).showSnackBar(snacksBar);
-  //
-  //     // return forumFromJson(body_forum);
-  //   } else if (status == 'fail_01' ||
-  //       status == 'fail_02' ||
-  //       status == 'fail_03' ||
-  //       status == 'fail_04') {
-  //     final snacksBar = SnackBar(
-  //       content: Text(status_msg),
-  //       //action: SnackBarAction(),
-  //     );
-  //     ScaffoldMessenger.of(context).showSnackBar(snacksBar);
-  //     //return forumFromJson(response.body[0]);
-  //   }
-  // }
-  //
-  // Future<bool> commentBlockUser({
-  //   String id,
-  //   String user,
-  //   BuildContext context,
-  // }) async {
-  //   final response =
-  //   await http.get(Uri.parse('$mainUrl/comment_block_user/$id/$user'));
-  //   var body = response.body;
-  //
-  //   Map<String, dynamic> j = json.decode(body);
-  //   String status = j['status'];
-  //
-  //   if (status == 'true') {
-  //     final snacksBar = SnackBar(
-  //       content: Text('You won\'t seen this user post anymore'),
-  //       //action: SnackBarAction(),
-  //     );
-  //
-  //     ScaffoldMessenger.of(context).showSnackBar(snacksBar);
-  //     return true;
-  //   } else if (status == 'false') {
-  //     final snacksBar = SnackBar(
-  //       content: Text('Could not perform operation, Try Later!'),
-  //       //action: SnackBarAction(),
-  //     );
-  //     ScaffoldMessenger.of(context).showSnackBar(snacksBar);
-  //     return false;
-  //   } else if (status == 'already') {
-  //     final snacksBar = SnackBar(
-  //       content: Text('User already Blocked!'),
-  //       //action: SnackBarAction(),
-  //     );
-  //     ScaffoldMessenger.of(context).showSnackBar(snacksBar);
-  //     return false;
-  //   }
-  // }
+  static Future<String> userAuthLogin(String email, String pass) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final uri = Uri.parse('$_mybaseUrl$_login_authorization');
 
-//   Future<bool> sendPrivateMsg({
-//     String name,
-//     String email,
-//     String message,
-//   }) async {
-//     final uri = Uri.parse('$mainUrl/send_private_message');
-//     var request = http.MultipartRequest('POST', uri);
-//     request.fields['name'] = name;
-//     request.fields['email'] = email;
-//     request.fields['message'] = message;
-//
-//     var respond = await request.send();
-//
-//     //print(respond);
-//     if (respond.statusCode == 200) {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   }
-//
-// //Quote Yes Counter
-//   Future<int> getCurrentQuoteYesCounter(String id) async {
-//     final response =
-//     await http.get(Uri.parse('$mainUrl/getCurrentQuoteYesCount/$id'));
-//     var body = response.body;
-//     Map<String, dynamic> j = json.decode(body);
-//     bool status = j['status'];
-//     int counter = j['counter'];
-//     // print('Counter Plus ${counter}');
-//     // print('Status Plus ${status}');
-//     if (status == true) {
-//       return counter;
-//     } else {
-//       return 0;
-//     }
-//   }
+    var response = await http.post(uri, body: {
+      'email': email,
+      'password': pass,
+    });
 
+    Map<String, dynamic> j = json.decode(response.body);
+    String status = j['status'];
+    String status_msg = j['status_msg'];
+
+    if (status == 'success') {
+      String user_id = j['user_id'];
+      String full_name = j['full_name'];
+      String age = j['age'];
+      String sex = j['sex'];
+      String emailAddres = j['email'];
+      String phone_no = j['phone_no'];
+      String user_img = j['user_img'];
+
+      prefs.setString('user_id', user_id);
+      prefs.setString('full_name', full_name);
+      prefs.setString('age', age);
+      prefs.setString('sex', sex);
+      prefs.setString('email', emailAddres);
+      prefs.setString('phone_no', phone_no);
+      prefs.setString('user_img', user_img);
+      prefs.setBool('isUserLogin', true);
+      prefs.setBool('profile_updated', false);
+
+      return status;
+    } else if (status == 'fail_01' ||
+        status == 'fail_02' ||
+        status == 'fail_03' ||
+        status == 'fail_04') {
+      return status;
+    }
+    return "fail";
+  }
+
+  static Future<String> userAuthSignup(
+      String email, String pass, String user_name, String gender) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final uri = Uri.parse('$_mybaseUrl$_signup_authorization');
+
+    var response = await http.post(uri, body: {
+      'email': email,
+      'password': pass,
+      'user_name': user_name,
+      'gender': gender,
+    });
+
+    Map<String, dynamic> j = json.decode(response.body);
+    String status = j['status'];
+    String status_msg = j['status_msg'];
+
+    if (status == 'success') {
+      String user_id = j['user_id'];
+      String full_name = j['full_name'];
+      String age = j['age'];
+      String sex = j['sex'];
+      String emailAddres = j['email'];
+      String phone_no = j['phone_no'];
+      String user_img = j['user_img'];
+
+      prefs.setString('user_id', user_id);
+      prefs.setString('full_name', full_name);
+      prefs.setString('age', age);
+      prefs.setString('sex', sex);
+      prefs.setString('email', emailAddres);
+      prefs.setString('phone_no', phone_no);
+      prefs.setString('user_img', user_img);
+      prefs.setBool('isUserLogin', true);
+      prefs.setBool('profile_updated', false);
+
+      return status;
+    } else if (status == 'fail_01' ||
+        status == 'fail_02' ||
+        status == 'fail_03' ||
+        status == 'fail_04' ||
+        status == 'fail_05') {
+      return status;
+    }
+    return "fail";
+  }
+
+  static Future<String> userAuthRest(String email) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final uri = Uri.parse('$_mybaseUrl$_reset_password');
+
+    var response = await http.post(uri, body: {
+      'email': email,
+    });
+
+    Map<String, dynamic> j = json.decode(response.body);
+    String status = j['status'];
+
+    if (status == 'success') {
+      return status;
+    } else if (status == 'fail_01' ||
+        status == 'fail_02' ||
+        status == 'fail_03' ||
+        status == 'fail_04') {
+      return status;
+    }
+
+    return "fail";
+  }
 }

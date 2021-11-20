@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:rcn/controller/audio_msg_controller.dart';
+import 'package:rcn/controller/live_message_controller.dart';
 import 'package:rcn/screens/search_audio_message_screen.dart';
 import 'package:rcn/widget/list_message_widget.dart';
 
@@ -13,6 +14,7 @@ class ListMessagesScreen extends StatefulWidget {
 }
 
 class _ListMessagesScreenState extends State<ListMessagesScreen> {
+  final liveMsg = LiveMessageController().getXID;
   final audioMsgListController = AudioMsgController().getXID;
   late ScrollController _controller;
 
