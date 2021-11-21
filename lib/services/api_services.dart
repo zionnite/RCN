@@ -36,6 +36,8 @@ class ApiServices {
   static String _login_authorization = 'login_authorization';
   static String _signup_authorization = 'signup_authorization';
   static String _reset_password = 'reset_password';
+  static String _live_stream_status = 'get_live_streaming_status';
+  static String _live_stream_link = 'get_live_streaming_link';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -413,7 +415,16 @@ class ApiServices {
   }
 
   static Future<String> get_live_status() async {
-    final response = await http.get(Uri.parse('$_mybaseUrl$_itestify_delete'));
+    final response =
+        await http.get(Uri.parse('$_mybaseUrl$_live_stream_status'));
+    var body = response.body;
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
+  }
+
+  static Future<String> get_live_link() async {
+    final response = await http.get(Uri.parse('$_mybaseUrl$_live_stream_link'));
     var body = response.body;
     final j = json.decode(body) as Map<String, dynamic>;
     String status = j['status'];

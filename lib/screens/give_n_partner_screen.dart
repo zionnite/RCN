@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:rcn/util.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GiveAndPartner extends StatefulWidget {
   const GiveAndPartner({Key? key}) : super(key: key);
@@ -163,28 +164,34 @@ class _GiveAndPartnerState extends State<GiveAndPartner> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              color: primaryColorLight,
-                              width: 1,
+                        child: InkWell(
+                          onTap: () {
+                            _launchWebsite(
+                                'https://rcnministry.org/partnership/');
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: primaryColorLight,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          color: bgColorWhite,
-                          elevation: 5,
-                          child: Container(
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: Text(
-                                'GIVE YOUR OFFERING',
-                                style: TextStyle(
-                                  color: textColorBlack,
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.w400,
+                            color: bgColorWhite,
+                            elevation: 5,
+                            child: Container(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.all(18.0),
+                                child: Text(
+                                  'GIVE YOUR OFFERING',
+                                  style: TextStyle(
+                                    color: textColorBlack,
+                                    fontSize: 17.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
@@ -195,28 +202,34 @@ class _GiveAndPartnerState extends State<GiveAndPartner> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              color: primaryColorLight,
-                              width: 1,
+                        child: InkWell(
+                          onTap: () {
+                            _launchWebsite(
+                                'https://rcnministry.org/partnership/');
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: primaryColorLight,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          color: bgColorWhite,
-                          elevation: 5,
-                          child: Container(
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: Text(
-                                'PAY YOUR TITHE',
-                                style: TextStyle(
-                                  color: textColorBlack,
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.w400,
+                            color: bgColorWhite,
+                            elevation: 5,
+                            child: Container(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.all(18.0),
+                                child: Text(
+                                  'PARTNERSHIP',
+                                  style: TextStyle(
+                                    color: textColorBlack,
+                                    fontSize: 17.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
@@ -231,5 +244,22 @@ class _GiveAndPartnerState extends State<GiveAndPartner> {
         ),
       ),
     );
+  }
+
+  Future<void> _launchWebsite(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: true,
+        forceWebView: true,
+        enableJavaScript: true,
+      );
+    } else {
+      Get.snackbar(
+        'Oops',
+        'Could not launch $url',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }

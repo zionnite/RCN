@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rcn/controller/live_message_controller.dart';
+import 'package:rcn/screens/video_message_screen.dart';
 import 'package:rcn/util.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class LiveMessage extends StatefulWidget {
@@ -11,6 +15,8 @@ class LiveMessage extends StatefulWidget {
 }
 
 class _LiveMessageState extends State<LiveMessage> {
+  final liveMessController = LiveMessageController().getXID;
+
   late String videoId;
   late YoutubePlayerController _controller;
   late TextEditingController _idController;
@@ -21,36 +27,246 @@ class _LiveMessageState extends State<LiveMessage> {
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
+  var isLiveNow = false;
+  bool isLoading = true;
+
+  get_live_status() async {
+    var status = await liveMessController.getLiveStatus();
+    var link = await liveMessController.getLiveLink();
+    setState(() {
+      if (status == 'true') {
+        isLiveNow = true;
+
+        videoId = YoutubePlayer.convertUrlToId(
+          "${link}",
+        )!;
+        _controller = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: YoutubePlayerFlags(
+            isLive: true,
+            enableCaption: true,
+            forceHD: true,
+          ),
+        )..addListener(listener);
+        _idController = TextEditingController();
+        _seekToController = TextEditingController();
+        _videoMetaData = const YoutubeMetaData();
+        _playerState = PlayerState.unknown;
+      } else {
+        isLiveNow = false;
+      }
+
+      isLoading = false;
+    });
+  }
 
   @override
   void initState() {
     // getYoutubeId();
     super.initState();
-    // videoId = YoutubePlayer.convertUrlToId(
-    //   "https://www.youtube.com/watch?v=fyLtzh0zv9A",
-    // )!;
-    videoId = YoutubePlayer.convertUrlToId(
-      "https://www.youtube.com/watch?v=FUUR-ABQoss",
-    )!;
-    // print(videoId);
-
-    _controller = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: YoutubePlayerFlags(
-        isLive: true,
-        enableCaption: true,
-        forceHD: true,
-      ),
-    )..addListener(listener);
-    _idController = TextEditingController();
-    _seekToController = TextEditingController();
-    _videoMetaData = const YoutubeMetaData();
-    _playerState = PlayerState.unknown;
+    get_live_status();
   }
 
   @override
   Widget build(BuildContext context) {
-    return getYoutubeId();
+    return (isLoading)
+        ? Center(
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              Text('Loading...'),
+            ],
+          ))
+        : (!isLiveNow)
+            ? Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.redAccent,
+                  elevation: 0,
+                ),
+                body: SingleChildScrollView(
+                  child: Stack(
+                    children: [
+                      Container(
+                        //margin: EdgeInsets.only(top: 110),
+                        child: Card(
+                          elevation: 5,
+                          child: Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(
+                              top: 10,
+                              bottom: 40,
+                            ),
+                            child: Column(
+                              children: [
+                                Center(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Remnant Christian Network',
+                                        style: TextStyle(
+                                          // color: primaryTextColor,
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 80.0, right: 80),
+                                        child: Divider(
+                                          height: 5.0,
+                                          // color: Colors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Striving for the rebirth of apostolic christianity...',
+                                        style: TextStyle(
+                                          // color: primaryTextColor,
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Stack(
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/apostle.jpeg',
+                                      width: double.infinity,
+                                      height: 300.0,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(
+                                          vertical: 60.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(1),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(100.0),
+                                          ),
+                                        ),
+                                        height: 200.0,
+                                        width: 200,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 5.0,
+                                                top: 45.0,
+                                              ),
+                                              child: Text(
+                                                'We',
+                                                style: TextStyle(
+                                                  fontSize: 25.0,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: textColorBlack,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 5.0,
+                                              ),
+                                              child: Text(
+                                                'Are',
+                                                style: TextStyle(
+                                                  fontSize: 48.0,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: textColorRed,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 5.0,
+                                              ),
+                                              child: Text(
+                                                'Offline',
+                                                style: TextStyle(
+                                                  fontSize: 25.0,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: textColorBlack,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'We are offline at the moment, watch video on demand by clicking the button below',
+                                          style: TextStyle(
+                                            // color: primaryTextColor,
+                                            fontSize: 18.0,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Get.to(
+                                        () => VideoMessage(),
+                                        transition: Transition.upToDown,
+                                      );
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          color: primaryColorLight,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      color: Colors.redAccent,
+                                      elevation: 5,
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(18.0),
+                                          child: Text(
+                                            'Watch Video On Demand',
+                                            style: TextStyle(
+                                              color: textColorWhite,
+                                              fontSize: 17.0,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            : getYoutubeId();
   }
 
   void listener() {
@@ -117,7 +333,8 @@ class _LiveMessageState extends State<LiveMessage> {
       builder: (context, player) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.deepOrangeAccent,
-          title: const Text(
+          elevation: 0,
+          title: Text(
             'Live Ministration',
             style: TextStyle(
               color: Colors.white,
@@ -151,7 +368,9 @@ class _LiveMessageState extends State<LiveMessage> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      _launchWebsite('https://rcnministry.org/partnership/');
+                    },
                     child: Card(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
@@ -192,7 +411,9 @@ class _LiveMessageState extends State<LiveMessage> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      _launchWebsite('https://rcnministry.org/partnership/');
+                    },
                     child: Card(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
@@ -208,7 +429,7 @@ class _LiveMessageState extends State<LiveMessage> {
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),
                           child: Text(
-                            'TITHE',
+                            'PARTNERSHIP',
                             style: TextStyle(
                               color: textColorBlack,
                               fontSize: 20.0,
@@ -329,5 +550,22 @@ class _LiveMessageState extends State<LiveMessage> {
         ),
       ),
     );
+  }
+
+  Future<void> _launchWebsite(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: true,
+        forceWebView: true,
+        enableJavaScript: true,
+      );
+    } else {
+      Get.snackbar(
+        'Oops',
+        'Could not launch $url',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }

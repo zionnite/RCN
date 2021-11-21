@@ -10,6 +10,7 @@ class LiveMessageController extends GetxController {
   void onInit() {
     super.onInit();
     getLiveStatus();
+    getLiveLink();
   }
 
   getLiveStatus() async {
@@ -17,6 +18,15 @@ class LiveMessageController extends GetxController {
     if (seeker != null) {
       isLive.value = seeker;
     }
+    return seeker;
+  }
+
+  getLiveLink() async {
+    var seeker = await ApiServices.get_live_link();
+    if (seeker != null) {
+      isLive.value = seeker;
+    }
+    return seeker;
   }
 
   setIsLive(value) {
