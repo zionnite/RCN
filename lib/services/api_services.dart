@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:rcn/model/announcement_model.dart';
@@ -283,6 +284,8 @@ class ApiServices {
       String emailAddres = j['email'];
       String phone_no = j['phone_no'];
       String user_img = j['user_img'];
+      String user_name = j['user_name'];
+      String is_profile_updated = j['is_profile_updated'];
 
       prefs.setString('user_id', user_id);
       prefs.setString('full_name', full_name);
@@ -292,7 +295,9 @@ class ApiServices {
       prefs.setString('phone_no', phone_no);
       prefs.setString('user_img', user_img);
       prefs.setBool('isUserLogin', true);
+      // prefs.setBool('profile_updated', is_profile_updated);
       prefs.setBool('profile_updated', false);
+      prefs.setString('user_name', user_name);
 
       return status;
     } else if (status == 'fail_01' ||
@@ -328,6 +333,8 @@ class ApiServices {
       String emailAddres = j['email'];
       String phone_no = j['phone_no'];
       String user_img = j['user_img'];
+      String user_name = j['user_name'];
+      bool is_profile_updated = j['is_profile_updated'];
 
       prefs.setString('user_id', user_id);
       prefs.setString('full_name', full_name);
@@ -337,7 +344,8 @@ class ApiServices {
       prefs.setString('phone_no', phone_no);
       prefs.setString('user_img', user_img);
       prefs.setBool('isUserLogin', true);
-      prefs.setBool('profile_updated', false);
+      prefs.setBool('profile_updated', is_profile_updated);
+      prefs.setString('user_name', user_name);
 
       return status;
     } else if (status == 'fail_01' ||
@@ -371,5 +379,79 @@ class ApiServices {
     }
 
     return "fail";
+  }
+
+  static Future<bool> updateUserProfile(String name, String age, String phone,
+      File profileImg, String sex, String my_id, var user_name) async {
+    final uri = Uri.parse('$_mybaseUrl/update_profile/$my_id');
+    var request = http.MultipartRequest('POST', uri);
+    request.fields['full_name'] = name;
+    request.fields['age'] = age;
+    request.fields['phone'] = phone;
+    request.fields['sex'] = sex;
+
+    var profileImage =
+        await http.MultipartFile.fromPath('profile_image', profileImg.path);
+    request.files.add(profileImage);
+
+    var respond = await request.send();
+    if (respond.statusCode == 200) {
+      var new_user_img = 'https://arome.joons-me.com/user_img/$user_name' +
+          '/images/' +
+          profileImage.filename!;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('full_name', name);
+      prefs.setString('age', age);
+      prefs.setString('sex', sex);
+      prefs.setString('phone_no', phone);
+      prefs.setString('user_img', new_user_img);
+      prefs.setBool('profile_updated', true);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<String> get_live_status() async {
+    final response = await http.get(Uri.parse('$_mybaseUrl$_itestify_delete'));
+    var body = response.body;
+    final j = json.decode(body) as Map<String, dynamic>;
+    String status = j['status'];
+    return status;
+  }
+
+  Future<int> isAppHasNewUpdate() async {
+    final response = await http.get(Uri.parse('$_mybaseUrl/has_new_update/'));
+
+    Map<String, dynamic> j = json.decode(response.body);
+    int counter = j['counter'];
+    return counter;
+  }
+
+  Future<String> iosStoreLink() async {
+    final response = await http.get(Uri.parse('$_mybaseUrl/ios_store_link/'));
+
+    Map<String, dynamic> j = json.decode(response.body);
+    String counter = j['link'];
+    return counter;
+  }
+
+  Future<String> androidStoreLink() async {
+    final response =
+        await http.get(Uri.parse('$_mybaseUrl/android_store_link/'));
+
+    Map<String, dynamic> j = json.decode(response.body);
+    String counter = j['link'];
+    return counter;
+  }
+
+  Future<bool> deleteMyAccount(my_id) async {
+    final response =
+        await http.get(Uri.parse('$_mybaseUrl/delete_account/$my_id'));
+
+    Map<String, dynamic> j = json.decode(response.body);
+    bool checker = j['status'];
+    // return true;
+    return checker;
   }
 }

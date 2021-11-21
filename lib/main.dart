@@ -89,6 +89,9 @@ void main() async {
   var isUserLogin = prefs.getBool('isUserLogin');
   var isFirstTime = prefs.getBool('isFirstTime');
 
+  // prefs.remove("isUserLogin");
+  // prefs.clear();
+
   runApp(MyApp(isUserLogin: isUserLogin, isFirstTime: isFirstTime));
 }
 //
@@ -141,7 +144,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: widget.isFirstTime != null
+      home: widget.isFirstTime == null
           ? OnBoardingScreen()
           : MyHomePage(isUserLogin: widget.isUserLogin),
       initialRoute: '/',
@@ -256,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: (widget.isUserLogin = false) ? BottomNav() : LoginSignupScreen(),
+      body: (widget.isUserLogin != null) ? BottomNav() : LoginSignupScreen(),
       // body: (widget.isUserLogin = false) ? BottomNav() : ResetPassword(),
     );
   }

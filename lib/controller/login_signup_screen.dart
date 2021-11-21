@@ -13,13 +13,20 @@ class LoginSignupController extends GetxController {
     return seeker;
   }
 
-  Future<String> login(email, var password) async {
+  Future<String> login(var email, var password) async {
     var seeker = await ApiServices.userAuthLogin(email, password);
     return seeker;
   }
 
   Future<String> reset(email) async {
     var seeker = await ApiServices.userAuthRest(email);
+    return seeker;
+  }
+
+  Future<bool> updateProfile(var name, var phone, var age, var sex,
+      var profileImg, var user_id, var user_name) async {
+    var seeker = await ApiServices.updateUserProfile(
+        name, age, phone, profileImg, sex, user_id, user_name);
     return seeker;
   }
 }

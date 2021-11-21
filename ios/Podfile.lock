@@ -22,6 +22,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - image_picker (0.0.1):
+    - Flutter
   - just_audio (0.0.1):
     - Flutter
   - maps_launcher (0.0.1):
@@ -56,6 +58,7 @@ DEPENDENCIES:
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_youtube_downloader (from `.symlinks/plugins/flutter_youtube_downloader/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -90,6 +93,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_youtube_downloader:
     :path: ".symlinks/plugins/flutter_youtube_downloader/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   maps_launcher:
@@ -123,6 +128,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_youtube_downloader: 6e5356a23cdebe931eeb9073206587d9c20339be
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c

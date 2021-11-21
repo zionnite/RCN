@@ -44,30 +44,45 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
               ),
               child: Container(
-                padding: EdgeInsets.only(top: 90, left: 20),
+                padding: EdgeInsets.only(top: 50, left: 0),
                 color: Colors.red.withOpacity(.2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "Hello... ",
-                        style: TextStyle(
-                          fontSize: 25,
-                          letterSpacing: 2,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(
+                        Icons.chevron_left_rounded,
+                        size: 45,
+                        color: Colors.white,
                       ),
                     ),
+                    Padding(
+                        padding: const EdgeInsets.only(top:10,left:28.0),
+                        child: RichText(
+                          text: TextSpan(
+                            text: "Hello... ",
+                            style: TextStyle(
+                              fontSize: 25,
+                              letterSpacing: 2,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )),
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
-                      "Enter Email to Continue",
-                      style: TextStyle(
-                        letterSpacing: 1,
-                        color: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 28.0),
+                      child: Text(
+                        "Enter Email to Continue",
+                        style: TextStyle(
+                          letterSpacing: 1,
+                          color: Colors.white,
+                        ),
                       ),
                     )
                   ],
@@ -75,6 +90,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               ),
             ),
           ),
+
           // Trick to add the shadow for the submit button
           buildBottomHalfContainer(true),
           //Main Contianer for Login and Signup

@@ -3,6 +3,12 @@
 <plist version="1.0">
 <dict>
 
+    <key>NSCameraUsageDescription</key>
+	<string>Need Permission to function properly</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Need Permission to function properly</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library to in order to upload Profile Photo your account, without allowing access to your photo library, App will not function properly</string>
 
 
 
@@ -15,7 +21,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>rcn</string>
+	<string>RCN</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

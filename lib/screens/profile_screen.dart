@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:rcn/screens/edit_profile_screen.dart';
+import 'package:rcn/screens/login_signup_screen.dart';
 import 'package:rcn/screens/your_audio_playlist_screen.dart';
-import 'package:rcn/screens/your_tithe_n_offering_insight.dart';
 import 'package:rcn/screens/your_video_playlist_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -14,6 +16,43 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String? user_id,
+      my_email,
+      my_image,
+      user_img,
+      full_name,
+      user_name,
+      age,
+      phone_no;
+
+  _initUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var isUserLogin = prefs.getBool('isUserLogin');
+    var user_id1 = prefs.getString('user_id');
+    var user_name1 = prefs.getString('user_name');
+    var user_full_name = prefs.getString('full_name');
+    var user_email = prefs.getString('email');
+    var user_img1 = prefs.getString('user_img');
+    var user_age = prefs.getString('age');
+    var phone_no1 = prefs.getString('phone_no');
+
+    setState(() {
+      user_id = user_id1!;
+      user_name = user_name1!;
+      full_name = user_full_name!;
+      my_email = user_email!;
+      user_img = user_img1!;
+      age = user_age!;
+      phone_no = phone_no1!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initUserDetail();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +112,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: Colors.deepOrange,
                           //size: 30,
                         ),
-                        onPressed: () => Get.back(),
+                        onPressed: () => Get.to(() => EditProfileScreen(),
+                            transition: Transition.zoom),
                       ),
                     ],
                   ),
@@ -84,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage: NetworkImage(
-                      'https://rcnsermons.org/wp-content/uploads/2020/05/Apostle-Arome-Osayi-365x365.png',
+                      '${user_img}',
                     ),
                   ),
                 )
@@ -135,21 +175,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      Get.to(
-                        () => YourTitheNOferringInsight(),
-                      );
-                    },
-                    child: ListTile(
-                      leading: Icon(Icons.account_balance_wallet),
-                      title: Text('Offering/Tithe Insight'),
-                      trailing: Icon(
-                        Icons.chevron_right_outlined,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                  ),
+                  // InkWell(
+                  //   onTap: () {
+                  //     Get.to(
+                  //       () => YourTitheNOferringInsight(),
+                  //     );
+                  //   },
+                  //   child: ListTile(
+                  //     leading: Icon(Icons.account_balance_wallet),
+                  //     title: Text('Offering/Tithe Insight'),
+                  //     trailing: Icon(
+                  //       Icons.chevron_right_outlined,
+                  //       color: Colors.redAccent,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -181,7 +221,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            'Nosakhare',
+                            '${user_name}',
                             style: TextStyle(),
                           ),
                         ),
@@ -201,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            'Nosakhare Atekha Endurance Zionnite',
+                            '${full_name}',
                             style: TextStyle(),
                           ),
                         ),
@@ -221,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            '09034286339',
+                            '${phone_no}',
                             style: TextStyle(),
                           ),
                         ),
@@ -241,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            '14yrs',
+                            '${age}yrs',
                             style: TextStyle(),
                           ),
                         ),
@@ -255,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               margin: EdgeInsets.only(top: 50),
               child: InkWell(
                 onTap: () {
-                  //logoutUser();
+                  logoutUser();
                 },
                 child: Card(
                   elevation: 4.0,
@@ -285,6 +325,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void logoutUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("isUserLogin");
+    //prefs?.clear();
+    Get.offAll(
+      () => LoginSignupScreen(),
+      transition: Transition.rightToLeftWithFade,
     );
   }
 }

@@ -336,6 +336,7 @@ class _AppMenuOptionState extends State<AppMenuOption> {
                         onTap: () {
                           Get.to(
                             () => ProfileScreen(),
+                            transition: Transition.downToUp,
                           );
                         },
                         child: ListTile(

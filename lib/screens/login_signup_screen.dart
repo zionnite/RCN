@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:rcn/component/bottom_nav.dart';
 import 'package:rcn/controller/login_signup_screen.dart';
 import 'package:rcn/pallete.dart';
 import 'package:rcn/screens/reset_password.dart';
@@ -19,11 +20,16 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   String user_name = '';
   late String password = '';
   late String email = '';
+  late String login_email = '';
+  late String login_password = '';
   bool isProcessing = false;
 
   final user_nameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
+
+  final login_emailController = TextEditingController();
+  final login_passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -219,10 +225,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             "info@rcn.com",
             false,
             true,
-            emailController,
+            login_emailController,
             (value) {
               setState(() {
-                email = value;
+                login_email = value;
               });
             },
           ),
@@ -231,10 +237,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             "**********",
             true,
             false,
-            passwordController,
+            login_passwordController,
             (value) {
               setState(() {
-                password = value;
+                login_password = value;
               });
             },
           ),
@@ -475,6 +481,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                         if (result == "success") {
                           showSnackBar("Congratulation",
                               "Your Registration was successful", Colors.green);
+                          Future.delayed(new Duration(seconds: 4), () {
+                            Get.offAll(
+                              () => BottomNav(),
+                              transition: Transition.leftToRightWithFade,
+                            );
+                          });
                         } else if (result == "fail_01") {
                           showSnackBar(
                               "Oops!!",
@@ -510,19 +522,23 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       });
                     } else {
                       setState(() {
-                        emailController.text = '';
-                        passwordController.text = '';
+                        login_emailController.text = '';
+                        login_passwordController.text = '';
                         isProcessing = true;
                       });
                       var result =
-                          await lsController.login(user_name, password);
+                          await lsController.login(login_email, login_password);
 
                       Future.delayed(new Duration(seconds: 4), () {
                         if (result == "success") {
-                          showSnackBar(
-                              "Success",
-                              "Submitted successfully, awaiting staff approval",
+                          showSnackBar("Redirecting...", "Login successful",
                               Colors.green);
+                          Future.delayed(new Duration(seconds: 4), () {
+                            Get.offAll(
+                              () => BottomNav(),
+                              transition: Transition.leftToRightWithFade,
+                            );
+                          });
                         } else if (result == "fail_01") {
                           showSnackBar(
                               "Oops!!",
@@ -600,9 +616,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           contentPadding: EdgeInsets.all(10),
           hintText: hintText,
           hintStyle: TextStyle(fontSize: 14, color: Palette.textColor1),
+          //errorText: validatePassword(controller.text),
         ),
       ),
     );
+  }
+
+  String? validatePassword(String value) {
+    if ((value.length <= 5) && value.isEmpty) {
+      return "Required and it must be more than 5 letters";
+    }
+    return null;
   }
 
   showSnackBar(String title, String msg, Color backgroundColor) {
