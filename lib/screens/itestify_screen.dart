@@ -89,7 +89,21 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
             scrollDirection: Axis.vertical,
             itemCount: itestListController.itestList.length,
             itemBuilder: (BuildContext context, int index) {
-              if (index == itestListController.itestList.length - 1 &&
+              if (itestListController.itestList[index].id == null) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      'No Data currently available',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              if (index > 0 &&
+                  index == itestListController.itestList.length - 1 &&
                   itestListController.isMoreDataAvailable.value == true) {
                 return Center(
                   child: CircularProgressIndicator(),

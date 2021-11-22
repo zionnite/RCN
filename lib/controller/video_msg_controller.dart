@@ -13,6 +13,7 @@ class VideoMsgController extends GetxController {
 
   var videoMsgList = <VideoMsg>[].obs;
   var searchvideoMsgList = <VideoMsg>[].obs;
+  var videoMsgPlayList = <VideoMsg>[].obs;
 
   @override
   void onInit() {
@@ -109,7 +110,32 @@ class VideoMsgController extends GetxController {
     }
 
     return seeker;
-    //return seeker;
+  }
+
+  getPlaylistDetails(var user_id) async {
+    var seeker = await ApiServices.getPlaylistVideoMsg(page_num, user_id);
+    if (seeker != null) {
+      // sliderList.clear();
+      videoMsgPlayList.value = seeker;
+    } else {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+  }
+
+  void getPlaylistMoreDetail(var page_num, var user_id) async {
+    var seeker = await ApiServices.getPlaylistVideoMsg(page_num, user_id);
+
+    if (seeker != null) {
+      isMoreDataAvailable(true);
+      videoMsgPlayList.addAll(seeker);
+    } else {
+      isMoreDataAvailable(false);
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+
+    if (isMoreDataAvailable == false) {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
   }
 
   showSnackBar(String title, String msg, Color backgroundColor) {

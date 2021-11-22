@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rcn/controller/video_msg_controller.dart';
-import 'package:rcn/screens/search_video_message_screen.dart';
 import 'package:rcn/widget/video_message_player_widget.dart';
 
 class YourVideoPlaylist extends StatefulWidget {
@@ -26,7 +25,7 @@ class _YourVideoPlaylistState extends State<YourVideoPlaylist> {
   @override
   void initState() {
     super.initState();
-    videoMsgListController.getDetails(user_id);
+    videoMsgListController.getPlaylistDetails(user_id);
     _controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -39,13 +38,7 @@ class _YourVideoPlaylistState extends State<YourVideoPlaylist> {
 
       //
 
-      videoMsgListController.getMoreDetail(current_page, user_id);
-
-      // Future.delayed(new Duration(seconds: 4), () {
-      //   setState(() {
-      //     isLoading = false;
-      //   });
-      // });
+      videoMsgListController.getPlaylistMoreDetail(current_page, user_id);
     }
   }
 
@@ -65,7 +58,7 @@ class _YourVideoPlaylistState extends State<YourVideoPlaylist> {
                   child: Padding(
                     padding: EdgeInsets.only(top: 100.0),
                     child: Text(
-                      'Video Messages',
+                      'Video Playlist',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 35.0,
@@ -86,72 +79,8 @@ class _YourVideoPlaylistState extends State<YourVideoPlaylist> {
                     onPressed: () => Get.back(),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 32.0),
-                  margin: EdgeInsets.only(top: 180.0),
-                  child: Material(
-                    elevation: 5.0,
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    child: TextField(
-                      controller: searchTermController,
-                      onChanged: (text) {
-                        setState(() {
-                          searchTerm = text;
-                        });
-                      },
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 32.0,
-                          vertical: 14.0,
-                        ),
-                        border: InputBorder.none,
-                        hintText: 'Search Video Message',
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () {
-                            if (!searchTermController.text.isEmpty) {
-                              setState(() {
-                                searchTermController.text = '';
-                                _showStatus = false;
-                              });
-                              Get.to(
-                                () => searchVideoMessageScreen(
-                                  search_term: searchTerm,
-                                ),
-                              );
-                            } else {
-                              setState(() {
-                                setState(() {
-                                  _showStatus = true;
-                                  _statusMsg =
-                                      'Search Term Field can\'t be empty!';
-                                });
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
-            (_showStatus == true)
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0),
-                    child: Text(
-                      _statusMsg,
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                : Container(),
             Container(
               margin: EdgeInsets.only(
                 top: 0,
@@ -163,10 +92,22 @@ class _YourVideoPlaylistState extends State<YourVideoPlaylist> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       physics: ClampingScrollPhysics(),
-                      itemCount: videoMsgListController.videoMsgList.length,
+                      itemCount: videoMsgListController.videoMsgPlayList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        if (index ==
-                                videoMsgListController.videoMsgList.length -
+                        if (videoMsgListController.videoMsgPlayList[index].id ==
+                            null) {
+                          return Center(
+                            child: Text(
+                              'Your Playlist is empty',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                            ),
+                          );
+                        }
+                        if (index > 0 &&
+                            index ==
+                                videoMsgListController.videoMsgPlayList.length -
                                     1 &&
                             videoMsgListController.isMoreDataAvailable.value ==
                                 true) {
@@ -174,23 +115,24 @@ class _YourVideoPlaylistState extends State<YourVideoPlaylist> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        if (videoMsgListController.videoMsgList[index].id ==
+                        if (videoMsgListController.videoMsgPlayList[index].id ==
                             null) {
                           videoMsgListController.isMoreDataAvailable.value =
                               false;
                           return Container();
                         }
                         return VideoMessagePlayerWidget(
-                          vid_image:
-                              videoMsgListController.videoMsgList[index].image,
-                          vid_link:
-                              videoMsgListController.videoMsgList[index].link,
-                          vid_title:
-                              videoMsgListController.videoMsgList[index].title,
-                          vid_id: videoMsgListController.videoMsgList[index].id,
+                          vid_image: videoMsgListController
+                              .videoMsgPlayList[index].image,
+                          vid_link: videoMsgListController
+                              .videoMsgPlayList[index].link,
+                          vid_title: videoMsgListController
+                              .videoMsgPlayList[index].title,
+                          vid_id:
+                              videoMsgListController.videoMsgPlayList[index].id,
                           user_id: user_id.toString(),
                           isPlayListed: videoMsgListController
-                              .videoMsgList[index].isPlayListed,
+                              .videoMsgPlayList[index].isPlayListed,
                           // vid_album: 'Ministration',
                         );
                       },

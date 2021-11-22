@@ -110,20 +110,19 @@ moveToLogin() async {
 
 final List<OnBoardModel> onBoardData = [
   const OnBoardModel(
-    title: "Set your own goals and get better",
-    description: "Goal support your motivation and inspire you to work harder",
-    imgUrl: "assets/images/weight.png",
+    title: "Listen & Download Audio Sermon",
+    description:
+        "you can download Apostle'\s sermon directly to your device and also able to create a playlist",
+    imgUrl: "assets/images/music.png",
   ),
   const OnBoardModel(
-    title: "Track your progress with statistics",
-    description:
-        "Analyse personal result with detailed chart and numerical values",
-    imgUrl: 'assets/images/graph.png',
+    title: "Go Live with Apostle",
+    description: "Never miss any moment of Apostle ministration",
+    imgUrl: 'assets/images/live.png',
   ),
   const OnBoardModel(
-    title: "Create photo comparision and share your results",
-    description:
-        "Take before and after photos to visualize progress and get the shape that you dream about",
-    imgUrl: 'assets/images/phone.png',
+    title: "Keep track of Apostle Itinerary",
+    description: "Stay connected to Apostle Ministration anywhere in the World",
+    imgUrl: 'assets/images/track.png',
   ),
 ];
