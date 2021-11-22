@@ -5,6 +5,7 @@ import 'package:rcn/services/api_services.dart';
 class LiveMessageController extends GetxController {
   LiveMessageController get getXID => Get.find<LiveMessageController>();
   var isLive = ''.obs;
+  var YoutubeLink = ''.obs;
 
   @override
   void onInit() {
@@ -24,7 +25,7 @@ class LiveMessageController extends GetxController {
   getLiveLink() async {
     var seeker = await ApiServices.get_live_link();
     if (seeker != null) {
-      isLive.value = seeker;
+      YoutubeLink.value = seeker;
     }
     return seeker;
   }

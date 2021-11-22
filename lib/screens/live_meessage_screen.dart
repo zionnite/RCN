@@ -17,8 +17,15 @@ class LiveMessage extends StatefulWidget {
 class _LiveMessageState extends State<LiveMessage> {
   final liveMessController = LiveMessageController().getXID;
 
+  // late String videoId;
+  // late YoutubePlayerController _controller;
+  // late TextEditingController _idController;
+  // late TextEditingController _seekToController;
+  // late PlayerState _playerState;
+  // late YoutubeMetaData _videoMetaData;
+
   late String videoId;
-  late YoutubePlayerController _controller;
+  YoutubePlayerController? _controller;
   late TextEditingController _idController;
   late TextEditingController _seekToController;
   late PlayerState _playerState;
@@ -27,37 +34,22 @@ class _LiveMessageState extends State<LiveMessage> {
   double _volume = 100;
   bool _muted = false;
   bool _isPlayerReady = false;
-  var isLiveNow = false;
+  var isLiveNow;
   bool isLoading = true;
-
+  late String Ylink;
   get_live_status() async {
     var status = await liveMessController.getLiveStatus();
-    var link = await liveMessController.getLiveLink();
     setState(() {
       if (status == 'true') {
         isLiveNow = true;
-
-        videoId = YoutubePlayer.convertUrlToId(
-          "${link}",
-        )!;
-        _controller = YoutubePlayerController(
-          initialVideoId: videoId,
-          flags: YoutubePlayerFlags(
-            isLive: true,
-            enableCaption: true,
-            forceHD: true,
-          ),
-        )..addListener(listener);
-        _idController = TextEditingController();
-        _seekToController = TextEditingController();
-        _videoMetaData = const YoutubeMetaData();
-        _playerState = PlayerState.unknown;
       } else {
         isLiveNow = false;
       }
 
       isLoading = false;
     });
+
+    print(isLoading);
   }
 
   @override
@@ -65,10 +57,54 @@ class _LiveMessageState extends State<LiveMessage> {
     // getYoutubeId();
     super.initState();
     get_live_status();
+    videoId = YoutubePlayer.convertUrlToId(
+      "${liveMessController.YoutubeLink}",
+    )!;
+
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: YoutubePlayerFlags(
+        isLive: true,
+        enableCaption: true,
+        forceHD: true,
+      ),
+    )..addListener(listener);
+    _idController = TextEditingController();
+    _seekToController = TextEditingController();
+    _videoMetaData = const YoutubeMetaData();
+    _playerState = PlayerState.unknown;
   }
 
   @override
   Widget build(BuildContext context) {
+    return getYoutubeId();
+  }
+
+  void listener() {
+    if (_isPlayerReady && mounted && !_controller!.value.isFullScreen) {
+      setState(() {
+        _playerState = _controller!.value.playerState;
+        _videoMetaData = _controller!.metadata;
+      });
+    }
+  }
+
+  @override
+  void deactivate() {
+    // Pauses video while navigating to next page.
+    _controller!.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller!.dispose();
+    _idController.dispose();
+    _seekToController.dispose();
+    super.dispose();
+  }
+
+  getYoutubeId() {
     return (isLoading)
         ? Center(
             child: Column(
@@ -78,8 +114,164 @@ class _LiveMessageState extends State<LiveMessage> {
               Text('Loading...'),
             ],
           ))
-        : (!isLiveNow)
-            ? Scaffold(
+        : (isLiveNow)
+            ? YoutubePlayerBuilder(
+                player: YoutubePlayer(
+                  controller: _controller!,
+                  liveUIColor: Colors.red,
+                  showVideoProgressIndicator: true,
+                  topActions: <Widget>[
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: Text(
+                        _controller!.metadata.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    // IconButton(
+                    //   icon: const Icon(
+                    //     Icons.settings,
+                    //     color: Colors.white,
+                    //     size: 25.0,
+                    //   ),
+                    //   onPressed: () {
+                    //     print('Settings Tapped!');
+                    //   },
+                    // ),
+                  ],
+                  onReady: () {
+                    _isPlayerReady = true;
+                  },
+                  onEnded: (data) {
+                    _showSnackBar('Live Broadcast Ended');
+                  },
+                ),
+                builder: (context, player) => Scaffold(
+                  appBar: AppBar(
+                    backgroundColor: Colors.deepOrangeAccent,
+                    elevation: 0,
+                    title: Text(
+                      'Live Ministration',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  body: ListView(
+                    children: [
+                      player,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _space,
+                            SizedBox(
+                              height: 100,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'You can give your Offering or pay your Tithe as Ministration is going on',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                _launchWebsite(
+                                    'https://rcnministry.org/partnership/');
+                              },
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    color: primaryColorLight,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                color: bgColorWhite,
+                                elevation: 3,
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(14.0),
+                                    child: Text(
+                                      'OFFERING',
+                                      style: TextStyle(
+                                        color: textColorBlack,
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                _launchWebsite(
+                                    'https://rcnministry.org/partnership/');
+                              },
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    color: primaryColorLight,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                color: bgColorWhite,
+                                elevation: 3,
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(14.0),
+                                    child: Text(
+                                      'PARTNERSHIP',
+                                      style: TextStyle(
+                                        color: textColorBlack,
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : Scaffold(
                 appBar: AppBar(
                   backgroundColor: Colors.redAccent,
                   elevation: 0,
@@ -265,189 +457,7 @@ class _LiveMessageState extends State<LiveMessage> {
                     ],
                   ),
                 ),
-              )
-            : getYoutubeId();
-  }
-
-  void listener() {
-    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
-      setState(() {
-        _playerState = _controller.value.playerState;
-        _videoMetaData = _controller.metadata;
-      });
-    }
-  }
-
-  @override
-  void deactivate() {
-    // Pauses video while navigating to next page.
-    _controller.pause();
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _idController.dispose();
-    _seekToController.dispose();
-    super.dispose();
-  }
-
-  getYoutubeId() {
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        controller: _controller,
-        liveUIColor: Colors.red,
-        showVideoProgressIndicator: true,
-        topActions: <Widget>[
-          const SizedBox(width: 8.0),
-          Expanded(
-            child: Text(
-              _controller.metadata.title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-          ),
-          // IconButton(
-          //   icon: const Icon(
-          //     Icons.settings,
-          //     color: Colors.white,
-          //     size: 25.0,
-          //   ),
-          //   onPressed: () {
-          //     print('Settings Tapped!');
-          //   },
-          // ),
-        ],
-        onReady: () {
-          _isPlayerReady = true;
-        },
-        onEnded: (data) {
-          _showSnackBar('Live Broadcast Ended');
-        },
-      ),
-      builder: (context, player) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.deepOrangeAccent,
-          elevation: 0,
-          title: Text(
-            'Live Ministration',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        body: ListView(
-          children: [
-            player,
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _space,
-                  SizedBox(
-                    height: 100,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'You can give your Offering or pay your Tithe as Ministration is going on',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      _launchWebsite('https://rcnministry.org/partnership/');
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: primaryColorLight,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      color: bgColorWhite,
-                      elevation: 3,
-                      child: Container(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.all(14.0),
-                          child: Text(
-                            'OFFERING',
-                            style: TextStyle(
-                              color: textColorBlack,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'OR',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      _launchWebsite('https://rcnministry.org/partnership/');
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: primaryColorLight,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      color: bgColorWhite,
-                      elevation: 3,
-                      child: Container(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.all(14.0),
-                          child: Text(
-                            'PARTNERSHIP',
-                            style: TextStyle(
-                              color: textColorBlack,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+              );
   }
 
   Widget _text(String title, String value) {
@@ -505,8 +515,8 @@ class _LiveMessageState extends State<LiveMessage> {
                         _idController.text,
                       ) ??
                       '';
-                  if (action == 'LOAD') _controller.load(id);
-                  if (action == 'CUE') _controller.cue(id);
+                  if (action == 'LOAD') _controller!.load(id);
+                  if (action == 'CUE') _controller!.cue(id);
                   FocusScope.of(context).requestFocus(FocusNode());
                 } else {
                   _showSnackBar('Source can\'t be empty!');
