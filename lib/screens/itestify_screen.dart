@@ -4,6 +4,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:rcn/controller/itestify_controller.dart';
 import 'package:rcn/util.dart';
 import 'package:rcn/widget/itestify_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speed_dial_fab/speed_dial_fab.dart';
 
 class ItestifyScreen extends StatefulWidget {
@@ -14,19 +15,38 @@ class ItestifyScreen extends StatefulWidget {
 }
 
 class _ItestifyScreenState extends State<ItestifyScreen> {
+  final _formKey = GlobalKey<FormState>();
   final itestListController = ItestifyController().getXID;
   late ScrollController _controller;
-  var user_id = 2;
+  String? user_id;
   var current_page = 1;
   bool isLoading = false;
   bool isFab = false;
   bool isSubmitting = false;
   late String msg;
 
+  _initUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var isUserLogin = prefs.getBool('isUserLogin');
+    var user_id1 = prefs.getString('user_id');
+    var user_name1 = prefs.getString('user_name');
+    var user_full_name = prefs.getString('full_name');
+    var user_email = prefs.getString('email');
+    var user_img1 = prefs.getString('user_img');
+    var user_age = prefs.getString('age');
+    var phone_no1 = prefs.getString('phone_no');
+
+    setState(() {
+      user_id = user_id1!;
+    });
+
+    itestListController.getDetails(current_page, user_id);
+  }
+
   @override
   void initState() {
     super.initState();
-    itestListController.getDetails(current_page, user_id);
+    _initUserDetail();
     _controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -89,19 +109,19 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
             scrollDirection: Axis.vertical,
             itemCount: itestListController.itestList.length,
             itemBuilder: (BuildContext context, int index) {
-              if (itestListController.itestList[index].id == null) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      'No Data currently available',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                    ),
-                  ),
-                );
-              }
+              // if (itestListController.itestList[index].id == null) {
+              //   return Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Center(
+              //       child: Text(
+              //         'No Data currently available',
+              //         style: TextStyle(
+              //           fontSize: 20.0,
+              //         ),
+              //       ),
+              //     ),
+              //   );
+              // }
               if (index > 0 &&
                   index == itestListController.itestList.length - 1 &&
                   itestListController.isMoreDataAvailable.value == true) {
@@ -137,28 +157,39 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
     Get.bottomSheet(
       Wrap(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-              child: TextField(
-                maxLines: 8,
-                onChanged: (value) async {
-                  setState(() {
-                    msg = value;
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: "Enter your text here ...",
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.red, //this has no effect
+          Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                child: TextFormField(
+                  maxLines: 8,
+                  onChanged: (value) async {
+                    setState(() {
+                      msg = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Enter your text here ...",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.red, //this has no effect
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    borderRadius: BorderRadius.circular(10.0),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    } else if (value.length <= 50) {
+                      return 'Text too short (Test must be above 50 Length';
+                    }
+                    return null;
+                  },
                 ),
               ),
             ),
@@ -168,15 +199,17 @@ class _ItestifyScreenState extends State<ItestifyScreen> {
           ),
           GestureDetector(
             onTap: () async {
-              setState(() {
-                isSubmitting = true;
-              });
-              await itestListController.add_testimony(user_id, msg);
-              Future.delayed(new Duration(seconds: 4), () {
+              if (_formKey.currentState!.validate()) {
                 setState(() {
-                  isSubmitting = false;
+                  isSubmitting = true;
                 });
-              });
+                await itestListController.add_testimony(user_id, msg);
+                Future.delayed(new Duration(seconds: 4), () {
+                  setState(() {
+                    isSubmitting = false;
+                  });
+                });
+              }
             },
             child: (isSubmitting)
                 ? CircularProgressIndicator()

@@ -12,6 +12,7 @@ class AudioMsgController extends GetxController {
   var isMoreDataAvailable = true.obs;
 
   var audioMsgList = <AudioMsg>[].obs;
+  var audioMsgPlayList = <AudioMsg>[].obs;
   var searchaudioMsgList = <AudioMsg>[].obs;
 
   @override
@@ -110,6 +111,32 @@ class AudioMsgController extends GetxController {
 
     return seeker;
     //return seeker;
+  }
+
+  getPlaylistDetails(var user_id) async {
+    var seeker = await ApiServices.getAudioPlaylistMsg(page_num, user_id);
+    if (seeker != null) {
+      // sliderList.clear();
+      audioMsgPlayList.value = seeker;
+    } else {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+  }
+
+  void getMorePlaylistDetail(var page_num, var user_id) async {
+    var seeker = await ApiServices.getAudioPlaylistMsg(page_num, user_id);
+
+    if (seeker != null) {
+      isMoreDataAvailable(true);
+      audioMsgPlayList.addAll(seeker);
+    } else {
+      isMoreDataAvailable(false);
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
+
+    if (isMoreDataAvailable == false) {
+      showSnackBar('Oops!', "No more items", Colors.red);
+    }
   }
 
   showSnackBar(String title, String msg, Color backgroundColor) {

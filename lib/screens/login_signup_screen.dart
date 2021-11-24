@@ -13,6 +13,16 @@ class LoginSignupScreen extends StatefulWidget {
 
 class _LoginSignupScreenState extends State<LoginSignupScreen> {
   final lsController = LoginSignupController().getXID;
+  final _formKey1 = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
+  final _formKey3 = GlobalKey<FormState>();
+  final _formKey4 = GlobalKey<FormState>();
+  final _formKey5 = GlobalKey<FormState>();
+  final _formKey6 = GlobalKey<FormState>();
+  final _formKey7 = GlobalKey<FormState>();
+  final _formKey8 = GlobalKey<FormState>();
+  final _formKey9 = GlobalKey<FormState>();
+  final _formKey10 = GlobalKey<FormState>();
 
   bool isSignupScreen = true;
   bool isMale = true;
@@ -231,19 +241,14 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 login_email = value;
               });
             },
+            _formKey1,
           ),
-          buildTextField(
-            MaterialCommunityIcons.lock_outline,
-            "**********",
-            true,
-            false,
-            login_passwordController,
-            (value) {
-              setState(() {
-                login_password = value;
-              });
-            },
-          ),
+          buildTextField(MaterialCommunityIcons.lock_outline, "**********",
+              true, false, login_passwordController, (value) {
+            setState(() {
+              login_password = value;
+            });
+          }, _formKey2),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -287,19 +292,19 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             setState(() {
               user_name = value;
             });
-          }),
+          }, _formKey3),
           buildTextField(MaterialCommunityIcons.email_outline, "email", false,
               true, emailController, (value) {
             setState(() {
               email = value;
             });
-          }),
+          }, _formKey4),
           buildTextField(MaterialCommunityIcons.lock_outline, "password", true,
               false, passwordController, (value) {
             setState(() {
               password = value;
             });
-          }),
+          }, _formKey5),
           Padding(
             padding: const EdgeInsets.only(top: 10, left: 10),
             child: Row(
@@ -457,107 +462,116 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               ? InkWell(
                   onTap: () async {
                     if (isSignupScreen) {
-                      setState(() {
-                        user_nameController.text = '';
-                        emailController.text = '';
-                        passwordController.text = '';
-                        isProcessing = true;
-                      });
-
-                      var gender;
-                      if (isMale) {
+                      if (_formKey3.currentState!.validate() &&
+                          _formKey4.currentState!.validate() &&
+                          _formKey5.currentState!.validate()) {
                         setState(() {
-                          gender = "Male";
+                          user_nameController.text = '';
+                          emailController.text = '';
+                          passwordController.text = '';
+                          isProcessing = true;
                         });
-                      } else {
-                        setState(() {
-                          gender = "Female";
+
+                        var gender;
+                        if (isMale) {
+                          setState(() {
+                            gender = "Male";
+                          });
+                        } else {
+                          setState(() {
+                            gender = "Female";
+                          });
+                        }
+
+                        var result = await lsController.signup(
+                            user_name, email, password, gender);
+                        Future.delayed(new Duration(seconds: 4), () {
+                          if (result == "success") {
+                            showSnackBar(
+                                "Congratulation",
+                                "Your Registration was successful",
+                                Colors.green);
+                            Future.delayed(new Duration(seconds: 4), () {
+                              Get.offAll(
+                                () => BottomNav(),
+                                transition: Transition.leftToRightWithFade,
+                              );
+                            });
+                          } else if (result == "fail_01") {
+                            showSnackBar(
+                                "Oops!!",
+                                "Signup Successful, could not redirect you to the App Home, Please click go back to the login page, to gain access to app!",
+                                Colors.red);
+                          } else if (result == "fail_02") {
+                            showSnackBar(
+                                "Oops!!",
+                                "Registration was not successful, please try after some time!",
+                                Colors.red);
+                          } else if (result == "fail_03") {
+                            showSnackBar(
+                                "Oops!!",
+                                "Email or Password can not be empty!",
+                                Colors.red);
+                          } else if (result == "fail_04") {
+                            showSnackBar(
+                                "Oops!!",
+                                "Someone with this Username already exist on our platform!",
+                                Colors.red);
+                          } else if (result == "fail_05") {
+                            showSnackBar(
+                                "Oops!!",
+                                "Someone with this email already exist on our platform!",
+                                Colors.red);
+                          } else {
+                            showSnackBar("Oops!!", "Unidentified error occur",
+                                Colors.deepOrange);
+                          }
+                          setState(() {
+                            isProcessing = false;
+                          });
                         });
                       }
-
-                      var result = await lsController.signup(
-                          user_name, email, password, gender);
-                      Future.delayed(new Duration(seconds: 4), () {
-                        if (result == "success") {
-                          showSnackBar("Congratulation",
-                              "Your Registration was successful", Colors.green);
-                          Future.delayed(new Duration(seconds: 4), () {
-                            Get.offAll(
-                              () => BottomNav(),
-                              transition: Transition.leftToRightWithFade,
-                            );
-                          });
-                        } else if (result == "fail_01") {
-                          showSnackBar(
-                              "Oops!!",
-                              "Signup Successful, could not redirect you to the App Home, Please click go back to the login page, to gain access to app!",
-                              Colors.red);
-                        } else if (result == "fail_02") {
-                          showSnackBar(
-                              "Oops!!",
-                              "Registration was not successful, please try after some time!",
-                              Colors.red);
-                        } else if (result == "fail_03") {
-                          showSnackBar(
-                              "Oops!!",
-                              "Email or Password can not be empty!",
-                              Colors.red);
-                        } else if (result == "fail_04") {
-                          showSnackBar(
-                              "Oops!!",
-                              "Someone with this Username already exist on our platform!",
-                              Colors.red);
-                        } else if (result == "fail_05") {
-                          showSnackBar(
-                              "Oops!!",
-                              "Someone with this email already exist on our platform!",
-                              Colors.red);
-                        } else {
-                          showSnackBar("Oops!!", "Unidentified error occur",
-                              Colors.deepOrange);
-                        }
-                        setState(() {
-                          isProcessing = false;
-                        });
-                      });
                     } else {
-                      setState(() {
-                        login_emailController.text = '';
-                        login_passwordController.text = '';
-                        isProcessing = true;
-                      });
-                      var result =
-                          await lsController.login(login_email, login_password);
-
-                      Future.delayed(new Duration(seconds: 4), () {
-                        if (result == "success") {
-                          showSnackBar("Redirecting...", "Login successful",
-                              Colors.green);
-                          Future.delayed(new Duration(seconds: 4), () {
-                            Get.offAll(
-                              () => BottomNav(),
-                              transition: Transition.leftToRightWithFade,
-                            );
-                          });
-                        } else if (result == "fail_01") {
-                          showSnackBar(
-                              "Oops!!",
-                              "User not found or Password is incorrect!",
-                              Colors.red);
-                        } else if (result == "fail_02") {
-                          showSnackBar(
-                              "Oops!!",
-                              "Email Or Password can not be empty!",
-                              Colors.red);
-                        } else {
-                          showSnackBar("Oops!!", "Unidentified error occur",
-                              Colors.deepOrange);
-                        }
-
+                      if (_formKey1.currentState!.validate() &&
+                          _formKey2.currentState!.validate()) {
                         setState(() {
-                          isProcessing = false;
+                          login_emailController.text = '';
+                          login_passwordController.text = '';
+                          isProcessing = true;
                         });
-                      });
+                        var result = await lsController.login(
+                            login_email, login_password);
+
+                        Future.delayed(new Duration(seconds: 4), () {
+                          if (result == "success") {
+                            showSnackBar("Redirecting...", "Login successful",
+                                Colors.green);
+                            Future.delayed(new Duration(seconds: 4), () {
+                              Get.offAll(
+                                () => BottomNav(),
+                                transition: Transition.leftToRightWithFade,
+                              );
+                            });
+                          } else if (result == "fail_01") {
+                            showSnackBar(
+                                "Oops!!",
+                                "User not found or Password is incorrect!",
+                                Colors.red);
+                          } else if (result == "fail_02") {
+                            showSnackBar(
+                                "Oops!!",
+                                "Email Or Password can not be empty!",
+                                Colors.red);
+                          } else {
+                            showSnackBar("Oops!!", "Unidentified error occur",
+                                Colors.deepOrange);
+                          }
+
+                          setState(() {
+                            isProcessing = false;
+                          });
+                        });
+                      }
                     }
                   },
                   child: Container(
@@ -591,32 +605,51 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     );
   }
 
-  Widget buildTextField(IconData icon, String hintText, bool isPassword,
-      bool isEmail, TextEditingController controller, textValue) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: TextField(
-        controller: controller,
-        onChanged: textValue,
-        obscureText: isPassword,
-        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            icon,
-            color: Palette.iconColor,
+  Widget buildTextField(
+      IconData icon,
+      String hintText,
+      bool isPassword,
+      bool isEmail,
+      TextEditingController controller,
+      textValue,
+      GlobalKey key) {
+    return Form(
+      key: key,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: TextFormField(
+          controller: controller,
+          onChanged: textValue,
+          obscureText: isPassword,
+          keyboardType:
+              isEmail ? TextInputType.emailAddress : TextInputType.text,
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              icon,
+              color: Palette.iconColor,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(35.0)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Palette.textColor1),
+              borderRadius: BorderRadius.all(Radius.circular(35.0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Palette.textColor1),
+              borderRadius: BorderRadius.all(Radius.circular(35.0)),
+            ),
+            contentPadding: EdgeInsets.all(10),
+            hintText: hintText,
+            hintStyle: TextStyle(fontSize: 14, color: Palette.textColor1),
+            //errorText: validatePassword(controller.text),
           ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Palette.textColor1),
-            borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Palette.textColor1),
-            borderRadius: BorderRadius.all(Radius.circular(35.0)),
-          ),
-          contentPadding: EdgeInsets.all(10),
-          hintText: hintText,
-          hintStyle: TextStyle(fontSize: 14, color: Palette.textColor1),
-          //errorText: validatePassword(controller.text),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter some text';
+            }
+            return null;
+          },
         ),
       ),
     );

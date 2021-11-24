@@ -24,6 +24,7 @@ class PageManager {
   var newPlayList;
 
   // Events: Calls coming from the UI
+
   void init() async {
     // await _loadPlaylist();
     _listenToPlaybackState();
@@ -51,7 +52,7 @@ class PageManager {
     _audioHandler.addQueueItems(mediaItems);
   }
 
-  Future<void> loadMyAudioPlaylist() async {
+  Future<void> loadMyAudioPlaylist(page_num, user_id) async {
     final songRepository = getIt<PlaylistRepository>();
     final playlist = await songRepository.fetchInitialPlaylist();
 
@@ -65,7 +66,7 @@ class PageManager {
             ))
         .toList();
 
-    //_audioHandler.removeAllQueueItem();
+    // _audioHandler.removeAllQueueItem();
     _audioHandler.addQueueItems(mediaItems);
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rcn/screens/app_menu_option_screen.dart';
+import 'package:rcn/screens/check_if_online_screen.dart';
 import 'package:rcn/screens/home_page_screen.dart';
-import 'package:rcn/screens/live_meessage_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class BottomNav extends StatefulWidget {
@@ -16,7 +16,8 @@ class _BottomNavState extends State<BottomNav> {
 
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    LiveMessage(),
+    // LiveMessage(),
+    CheckIfOnlineScreen(),
     AppMenuOption(),
     //MessagePlayer(),
   ];

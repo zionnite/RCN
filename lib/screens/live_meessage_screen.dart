@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rcn/controller/live_message_controller.dart';
-import 'package:rcn/screens/video_message_screen.dart';
 import 'package:rcn/util.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -36,20 +35,22 @@ class _LiveMessageState extends State<LiveMessage> {
   bool _isPlayerReady = false;
   var isLiveNow;
   bool isLoading = true;
-  late String Ylink;
+  String? Ylink;
   get_live_status() async {
     var status = await liveMessController.getLiveStatus();
+    var link = await liveMessController.getLiveLink();
+
     setState(() {
       if (status == 'true') {
         isLiveNow = true;
+        Ylink = link;
       } else {
         isLiveNow = false;
+        Ylink = null;
       }
 
       isLoading = false;
     });
-
-    print(isLoading);
   }
 
   @override
@@ -57,6 +58,7 @@ class _LiveMessageState extends State<LiveMessage> {
     // getYoutubeId();
     super.initState();
     get_live_status();
+
     videoId = YoutubePlayer.convertUrlToId(
       "${liveMessController.YoutubeLink}",
     )!;
@@ -105,359 +107,160 @@ class _LiveMessageState extends State<LiveMessage> {
   }
 
   getYoutubeId() {
-    return (isLoading)
-        ? Center(
-            child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              Text('Loading...'),
-            ],
-          ))
-        : (isLiveNow)
-            ? YoutubePlayerBuilder(
-                player: YoutubePlayer(
-                  controller: _controller!,
-                  liveUIColor: Colors.red,
-                  showVideoProgressIndicator: true,
-                  topActions: <Widget>[
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: Text(
-                        _controller!.metadata.title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                    // IconButton(
-                    //   icon: const Icon(
-                    //     Icons.settings,
-                    //     color: Colors.white,
-                    //     size: 25.0,
-                    //   ),
-                    //   onPressed: () {
-                    //     print('Settings Tapped!');
-                    //   },
-                    // ),
-                  ],
-                  onReady: () {
-                    _isPlayerReady = true;
-                  },
-                  onEnded: (data) {
-                    _showSnackBar('Live Broadcast Ended');
-                  },
-                ),
-                builder: (context, player) => Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: Colors.deepOrangeAccent,
-                    elevation: 0,
-                    title: Text(
-                      'Live Ministration',
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        controller: _controller!,
+        liveUIColor: Colors.red,
+        showVideoProgressIndicator: true,
+        topActions: <Widget>[
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: Text(
+              _controller!.metadata.title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+          // IconButton(
+          //   icon: const Icon(
+          //     Icons.settings,
+          //     color: Colors.white,
+          //     size: 25.0,
+          //   ),
+          //   onPressed: () {
+          //     print('Settings Tapped!');
+          //   },
+          // ),
+        ],
+        onReady: () {
+          _isPlayerReady = true;
+        },
+        onEnded: (data) {
+          _showSnackBar('Live Broadcast Ended');
+        },
+      ),
+      builder: (context, player) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.deepOrangeAccent,
+          elevation: 0,
+          title: Text(
+            'Live Ministration',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        body: ListView(
+          children: [
+            player,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _space,
+                  SizedBox(
+                    height: 100,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'You can give your Offering or pay your Tithe as Ministration is going on',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24.0,
+                        color: Colors.black,
+                        fontSize: 12.0,
                         fontWeight: FontWeight.bold,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  body: ListView(
-                    children: [
-                      player,
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            _space,
-                            SizedBox(
-                              height: 100,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'You can give your Offering or pay your Tithe as Ministration is going on',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                _launchWebsite(
-                                    'https://rcnministry.org/partnership/');
-                              },
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    color: primaryColorLight,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                color: bgColorWhite,
-                                elevation: 3,
-                                child: Container(
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(14.0),
-                                    child: Text(
-                                      'OFFERING',
-                                      style: TextStyle(
-                                        color: textColorBlack,
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'OR',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                _launchWebsite(
-                                    'https://rcnministry.org/partnership/');
-                              },
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    color: primaryColorLight,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                color: bgColorWhite,
-                                elevation: 3,
-                                child: Container(
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(14.0),
-                                    child: Text(
-                                      'PARTNERSHIP',
-                                      style: TextStyle(
-                                        color: textColorBlack,
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                  InkWell(
+                    onTap: () {
+                      _launchWebsite('https://rcnministry.org/partnership/');
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: primaryColorLight,
+                          width: 1,
                         ),
+                        borderRadius: BorderRadius.circular(6),
                       ),
-                    ],
-                  ),
-                ),
-              )
-            : Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.redAccent,
-                  elevation: 0,
-                ),
-                body: SingleChildScrollView(
-                  child: Stack(
-                    children: [
-                      Container(
-                        //margin: EdgeInsets.only(top: 110),
-                        child: Card(
-                          elevation: 5,
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(
-                              top: 10,
-                              bottom: 40,
+                      color: bgColorWhite,
+                      elevation: 3,
+                      child: Container(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: Text(
+                            'OFFERING',
+                            style: TextStyle(
+                              color: textColorBlack,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w500,
                             ),
-                            child: Column(
-                              children: [
-                                Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'Remnant Christian Network',
-                                        style: TextStyle(
-                                          // color: primaryTextColor,
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 80.0, right: 80),
-                                        child: Divider(
-                                          height: 5.0,
-                                          // color: Colors.white,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Striving for the rebirth of apostolic christianity...',
-                                        style: TextStyle(
-                                          // color: primaryTextColor,
-                                          fontSize: 14.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Stack(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/apostle.jpeg',
-                                      width: double.infinity,
-                                      height: 300.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    Center(
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                          vertical: 60.0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(1),
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(100.0),
-                                          ),
-                                        ),
-                                        height: 200.0,
-                                        width: 200,
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 5.0,
-                                                top: 45.0,
-                                              ),
-                                              child: Text(
-                                                'We',
-                                                style: TextStyle(
-                                                  fontSize: 25.0,
-                                                  fontWeight: FontWeight.w900,
-                                                  color: textColorBlack,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 5.0,
-                                              ),
-                                              child: Text(
-                                                'Are',
-                                                style: TextStyle(
-                                                  fontSize: 48.0,
-                                                  fontWeight: FontWeight.w900,
-                                                  color: textColorRed,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 5.0,
-                                              ),
-                                              child: Text(
-                                                'Offline',
-                                                style: TextStyle(
-                                                  fontSize: 25.0,
-                                                  fontWeight: FontWeight.w900,
-                                                  color: textColorBlack,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'We are offline at the moment, watch video on demand by clicking the button below',
-                                          style: TextStyle(
-                                            // color: primaryTextColor,
-                                            fontSize: 18.0,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Get.to(
-                                        () => VideoMessage(),
-                                        transition: Transition.upToDown,
-                                      );
-                                    },
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          color: primaryColorLight,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      color: Colors.redAccent,
-                                      elevation: 5,
-                                      child: Container(
-                                        width: double.infinity,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: Text(
-                                            'Watch Video On Demand',
-                                            style: TextStyle(
-                                              color: textColorWhite,
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              );
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'OR',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _launchWebsite('https://rcnministry.org/partnership/');
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: primaryColorLight,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      color: bgColorWhite,
+                      elevation: 3,
+                      child: Container(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: Text(
+                            'PARTNERSHIP',
+                            style: TextStyle(
+                              color: textColorBlack,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _text(String title, String value) {

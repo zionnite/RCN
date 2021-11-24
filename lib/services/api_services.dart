@@ -39,6 +39,7 @@ class ApiServices {
   static String _live_stream_status = 'get_live_streaming_status';
   static String _live_stream_link = 'get_live_streaming_link';
   static String _video_playlist = 'get_video_playlist';
+  static String _audio_playlist = 'get_audio_playlist';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -84,6 +85,21 @@ class ApiServices {
     try {
       final result = await client
           .get(Uri.parse('$_mybaseUrl$_audio_msg/$page_num/$user_id'));
+      if (result.statusCode == 200) {
+        final response = audioMsgFromJson(result.body);
+        return response;
+      } else {
+        return Future.error('Unwanted status Code');
+      }
+    } catch (ex) {
+      return Future.error(ex.toString());
+    }
+  }
+
+  static getAudioPlaylistMsg(var page_num, var user_id) async {
+    try {
+      final result = await client
+          .get(Uri.parse('$_mybaseUrl$_audio_playlist/$page_num/$user_id'));
       if (result.statusCode == 200) {
         final response = audioMsgFromJson(result.body);
         return response;

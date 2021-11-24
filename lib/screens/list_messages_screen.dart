@@ -5,6 +5,7 @@ import 'package:rcn/controller/audio_msg_controller.dart';
 import 'package:rcn/controller/live_message_controller.dart';
 import 'package:rcn/screens/search_audio_message_screen.dart';
 import 'package:rcn/widget/list_message_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListMessagesScreen extends StatefulWidget {
   const ListMessagesScreen({Key? key}) : super(key: key);
@@ -22,14 +23,32 @@ class _ListMessagesScreenState extends State<ListMessagesScreen> {
   late String searchTerm;
   bool _showStatus = false;
   late String _statusMsg;
-  var user_id = 2;
+  String? user_id;
   var current_page = 1;
   bool isLoading = false;
+
+  _initUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var isUserLogin = prefs.getBool('isUserLogin');
+    var user_id1 = prefs.getString('user_id');
+    var user_name1 = prefs.getString('user_name');
+    var user_full_name = prefs.getString('full_name');
+    var user_email = prefs.getString('email');
+    var user_img1 = prefs.getString('user_img');
+    var user_age = prefs.getString('age');
+    var phone_no1 = prefs.getString('phone_no');
+
+    setState(() {
+      user_id = user_id1!;
+    });
+
+    audioMsgListController.getDetails(user_id);
+  }
 
   @override
   void initState() {
     super.initState();
-    audioMsgListController.getDetails(user_id);
+    _initUserDetail();
     _controller = ScrollController()..addListener(_scrollListener);
   }
 

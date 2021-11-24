@@ -3,6 +3,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/state_manager.dart';
 import 'package:rcn/controller/video_msg_controller.dart';
 import 'package:rcn/widget/video_message_player_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class searchVideoMessageScreen extends StatefulWidget {
   searchVideoMessageScreen({Key? key, required this.search_term})
@@ -22,15 +23,34 @@ class _searchVideoMessageScreenState extends State<searchVideoMessageScreen> {
   late String searchTerm;
   bool _showStatus = false;
   late String _statusMsg;
-  var user_id = 2;
+  var user_id;
   var current_page = 1;
   bool isLoading = false;
+
+  _initUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var isUserLogin = prefs.getBool('isUserLogin');
+    var user_id1 = prefs.getString('user_id');
+    var user_name1 = prefs.getString('user_name');
+    var user_full_name = prefs.getString('full_name');
+    var user_email = prefs.getString('email');
+    var user_img1 = prefs.getString('user_img');
+    var user_age = prefs.getString('age');
+    var phone_no1 = prefs.getString('phone_no');
+
+    setState(() {
+      user_id = user_id1!;
+    });
+
+    videoMsgListController.fetch_search_page(
+        current_page, widget.search_term, user_id);
+  }
 
   @override
   void initState() {
     super.initState();
-    videoMsgListController.fetch_search_page(
-        current_page, widget.search_term, user_id);
+    _initUserDetail();
+
     _controller = ScrollController()..addListener(_scrollListener);
   }
 
