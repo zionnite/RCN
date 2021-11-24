@@ -5,6 +5,7 @@ import 'package:rcn/component/bottom_nav.dart';
 import 'package:rcn/controller/login_signup_screen.dart';
 import 'package:rcn/pallete.dart';
 import 'package:rcn/screens/reset_password.dart';
+import 'package:rcn/screens/terms_n_condition.dart';
 
 class LoginSignupScreen extends StatefulWidget {
   @override
@@ -385,21 +386,26 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               ],
             ),
           ),
-          Container(
-            width: 200,
-            margin: EdgeInsets.only(top: 15),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text: "By pressing 'Submit' you agree to our ",
-                style: TextStyle(color: Palette.textColor2),
-                children: [
-                  TextSpan(
-                    //recognizer: ,
-                    text: "term & conditions",
-                    style: TextStyle(color: Colors.orange),
-                  ),
-                ],
+          InkWell(
+            onTap: () {
+              Get.to(() => Terms_N_Conditions());
+            },
+            child: Container(
+              width: 200,
+              margin: EdgeInsets.only(top: 15),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: "By pressing 'Submit' you agree to our ",
+                  style: TextStyle(color: Palette.textColor2),
+                  children: [
+                    TextSpan(
+                      //recognizer: ,
+                      text: "term & conditions",
+                      style: TextStyle(color: Colors.orange),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
