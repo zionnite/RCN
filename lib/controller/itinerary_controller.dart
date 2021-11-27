@@ -23,10 +23,8 @@ class ItineraryController extends GetxController {
   getItineray() async {
     var seeker = await ApiServices.getItinerary(page_num);
     if (seeker != null) {
-      // sliderList.clear();
+      isDataProcessing(true);
       itinearyList.value = seeker;
-    } else {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 

@@ -48,7 +48,6 @@ class _HomeBannerState extends State<HomeBanner> {
           fadeInCurve: Curves.easeIn,
           placeholder: (context, progressText) => Center(
             child: CircularProgressIndicator(
-              value: 0.8,
               valueColor: AlwaysStoppedAnimation<Color>(Colors.purple),
             ),
           ),

@@ -250,9 +250,9 @@ class _GiveAndPartnerState extends State<GiveAndPartner> {
     if (await canLaunch(url)) {
       await launch(
         url,
-        forceSafariVC: true,
-        forceWebView: true,
-        enableJavaScript: true,
+        // forceSafariVC: true,
+        // forceWebView: true,
+        // enableJavaScript: true,
       );
     } else {
       Get.snackbar(

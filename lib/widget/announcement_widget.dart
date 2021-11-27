@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,21 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: Image.network('${widget.an_img}')),
+                Expanded(
+                  child: CachedNetworkImage(
+                    imageUrl: '${widget.an_img}',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    fadeInDuration: Duration(milliseconds: 500),
+                    fadeInCurve: Curves.easeIn,
+                    placeholder: (context, progressText) => Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.purple),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
             SizedBox(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 import 'package:rcn/component/bottom_nav.dart';
 import 'package:rcn/component/page_manager.dart';
@@ -68,7 +67,6 @@ void main() async {
   Get.put(LoginSignupController());
 
   await setupServiceLocator();
-  await FlutterDownloader.initialize(debug: debug);
 
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(

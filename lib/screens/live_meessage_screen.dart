@@ -369,9 +369,9 @@ class _LiveMessageState extends State<LiveMessage> {
     if (await canLaunch(url)) {
       await launch(
         url,
-        forceSafariVC: true,
-        forceWebView: true,
-        enableJavaScript: true,
+        // forceSafariVC: true,
+        // forceWebView: true,
+        // enableJavaScript: true,
       );
     } else {
       Get.snackbar(

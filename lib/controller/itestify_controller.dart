@@ -22,9 +22,8 @@ class ItestifyController extends GetxController {
   getDetails(var page_num, var user_id) async {
     var seeker = await ApiServices.getItestify(page_num, user_id);
     if (seeker != null) {
+      isDataProcessing(true);
       itestList.value = seeker;
-    } else {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -44,13 +43,6 @@ class ItestifyController extends GetxController {
     if (seeker != null) {
       isMoreDataAvailable(true);
       itestList.addAll(seeker);
-    } else {
-      isMoreDataAvailable(false);
-      showSnackBar('Oops!', "No more items", Colors.red);
-    }
-
-    if (isMoreDataAvailable == false) {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 

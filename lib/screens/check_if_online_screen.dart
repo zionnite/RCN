@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:rcn/controller/live_message_controller.dart';
 import 'package:rcn/screens/video_message_screen.dart';
 import 'package:rcn/util.dart';
@@ -54,12 +56,10 @@ class _CheckIfOnlineScreenState extends State<CheckIfOnlineScreen> {
     return Scaffold(
       body: (isLoading)
           ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  Text('Loading...'),
-                ],
+              child: Loading(
+                indicator: BallPulseIndicator(),
+                size: 50.0,
+                color: Colors.redAccent,
               ),
             )
           : (!isLiveNow)

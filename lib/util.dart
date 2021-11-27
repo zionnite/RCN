@@ -23,3 +23,5 @@ Color textColorRed = Colors.redAccent;
 Color firstColor = Color(0xFFFFD700);
 Color fadeColorWhite = Colors.white60;
 Color fadeColorBlack = Colors.black87;
+
+final int CURRENT_RCN_APP_VERSION = 1;

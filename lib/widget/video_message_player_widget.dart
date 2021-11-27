@@ -4,7 +4,6 @@ import 'dart:ui';
 
 import 'package:android_path_provider/android_path_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/route_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,29 +48,12 @@ class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
   @override
   void initState() {
     super.initState();
-    IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      int progress = data[2];
-      setState(() {});
-    });
-
-    FlutterDownloader.registerCallback(downloadCallback);
   }
 
   @override
   void dispose() {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
-  }
-
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
-    final SendPort? send =
-        IsolateNameServer.lookupPortByName('downloader_send_port');
-    send!.send([id, status, progress]);
   }
 
   @override
@@ -85,7 +67,7 @@ class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
               height: 200,
               width: double.infinity,
               padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
+                horizontal: 0.0,
               ),
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -173,14 +155,6 @@ class _VideoMessagePlayerWidgetState extends State<VideoMessagePlayerWidget> {
                           downloading = true;
                         });
                         await _prepare();
-                        // downloadFile(widget.vid_link, widget.vid_title);
-                        final id = await FlutterDownloader.enqueue(
-                          url: widget.vid_link,
-                          savedDir: _localPath,
-                          fileName: "123456765you",
-                          showNotification: true,
-                          openFileFromNotification: true,
-                        );
 
                         print('Save director ${_localPath}');
 

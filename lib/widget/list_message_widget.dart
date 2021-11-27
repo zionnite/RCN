@@ -5,10 +5,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/route_manager.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rcn/controller/audio_msg_controller.dart';
 import 'package:rcn/screens/message_player_screen.dart';
+import 'package:rcn/services/api_services.dart';
+import 'package:rcn/util.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListMessageWidget extends StatefulWidget {
   ListMessageWidget({
@@ -41,6 +45,49 @@ class _ListMessageWidgetState extends State<ListMessageWidget> {
   var progressString = "";
   double progress = 0.0;
 
+  GlobalKey<ScaffoldState> fancyDialog = GlobalKey();
+  showPop() async {
+    final int UPDATED_WOW_APP_VERSION = await ApiServices.isAppHasNewUpdate();
+    var AndroidAppLink = await ApiServices.androidStoreLink();
+    var iosAppLink = await ApiServices.iosStoreLink();
+    if (UPDATED_WOW_APP_VERSION > CURRENT_RCN_APP_VERSION) {
+      return showDialog(
+        context: context,
+        builder: (_) => AssetGiffyDialog(
+          key: fancyDialog,
+          image: Image.asset(
+            'assets/images/updates.gif',
+            fit: BoxFit.cover,
+          ),
+          title: Text(
+            'New App Update!',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+          ),
+          entryAnimation: EntryAnimation.BOTTOM_RIGHT,
+          description: Text(
+            'New App Update is available on the Store, click on the Button to update to the new version',
+            textAlign: TextAlign.center,
+          ),
+          buttonOkText: Text(
+            'Update Now',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          onOkButtonPressed: () {
+            if (Platform.isIOS) {
+              _launchWebsite(iosAppLink);
+            }
+            if (Platform.isAndroid) {
+              _launchWebsite(AndroidAppLink);
+            }
+          },
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,6 +114,7 @@ class _ListMessageWidgetState extends State<ListMessageWidget> {
         trailing: PopupMenuButton(
           enabled: true,
           onSelected: (value) async {
+            showPop();
             if (value == 'Play') {
               Get.to(
                 () => MessagePlayer(
@@ -209,5 +257,22 @@ class _ListMessageWidgetState extends State<ListMessageWidget> {
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
     );
+  }
+
+  Future<void> _launchWebsite(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        enableJavaScript: false,
+      );
+    } else {
+      Get.snackbar(
+        'Oops',
+        'Could not launch $url',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }

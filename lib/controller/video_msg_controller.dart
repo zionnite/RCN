@@ -9,6 +9,7 @@ class VideoMsgController extends GetxController {
   ScrollController videoScrollController = ScrollController();
   var page_num = 1;
   var isDataProcessing = false.obs;
+  var isDataSearchProcessing = false.obs;
   var isMoreDataAvailable = true.obs;
 
   var videoMsgList = <VideoMsg>[].obs;
@@ -23,10 +24,8 @@ class VideoMsgController extends GetxController {
   getDetails(var user_id) async {
     var seeker = await ApiServices.getVideoMsg(page_num, user_id);
     if (seeker != null) {
-      // sliderList.clear();
+      isDataProcessing(true);
       videoMsgList.value = seeker;
-    } else {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -46,13 +45,6 @@ class VideoMsgController extends GetxController {
     if (seeker != null) {
       isMoreDataAvailable(true);
       videoMsgList.addAll(seeker);
-    } else {
-      isMoreDataAvailable(false);
-      showSnackBar('Oops!', "No more items", Colors.red);
-    }
-
-    if (isMoreDataAvailable == false) {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -61,16 +53,9 @@ class VideoMsgController extends GetxController {
         await ApiServices.getSearchVideoMsg(page_num, search_term, user_id);
 
     if (seeker != null) {
-      isMoreDataAvailable(true);
+      isDataSearchProcessing(true);
       searchvideoMsgList.clear();
       searchvideoMsgList.addAll(seeker);
-    } else {
-      isMoreDataAvailable(false);
-      showSnackBar('Oops!', "No more items", Colors.red);
-    }
-
-    if (isMoreDataAvailable == false) {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -82,13 +67,6 @@ class VideoMsgController extends GetxController {
     if (seeker != null) {
       isMoreDataAvailable(true);
       searchvideoMsgList.addAll(seeker);
-    } else {
-      isMoreDataAvailable(false);
-      showSnackBar('Oops!', "No more items", Colors.red);
-    }
-
-    if (isMoreDataAvailable == false) {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -117,8 +95,6 @@ class VideoMsgController extends GetxController {
     if (seeker != null) {
       // sliderList.clear();
       videoMsgPlayList.value = seeker;
-    } else {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -128,13 +104,6 @@ class VideoMsgController extends GetxController {
     if (seeker != null) {
       isMoreDataAvailable(true);
       videoMsgPlayList.addAll(seeker);
-    } else {
-      isMoreDataAvailable(false);
-      showSnackBar('Oops!', "No more items", Colors.red);
-    }
-
-    if (isMoreDataAvailable == false) {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 

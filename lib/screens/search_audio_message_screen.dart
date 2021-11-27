@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/state_manager.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:rcn/controller/audio_msg_controller.dart';
 import 'package:rcn/widget/list_message_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +28,16 @@ class _SearchAudioMessageScreenState extends State<SearchAudioMessageScreen> {
   var user_id;
   var current_page = 1;
   bool isLoading = false;
+  bool widgetLoading = true;
+
+  getIfAudioLoaded() {
+    var loading = audioMsgListController.isSearchDataProcessing.value;
+    if (loading) {
+      setState(() {
+        widgetLoading = false;
+      });
+    }
+  }
 
   _initUserDetail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -51,6 +63,12 @@ class _SearchAudioMessageScreenState extends State<SearchAudioMessageScreen> {
     super.initState();
     _initUserDetail();
     _controller = ScrollController()..addListener(_scrollListener);
+
+    Future.delayed(new Duration(seconds: 4), () {
+      setState(() {
+        getIfAudioLoaded();
+      });
+    });
   }
 
   void searchAudio() {
@@ -185,49 +203,57 @@ class _SearchAudioMessageScreenState extends State<SearchAudioMessageScreen> {
               child: Column(
                 children: [
                   Card(
-                    child: Obx(
-                      () => ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount:
-                            audioMsgListController.searchaudioMsgList.length,
-                        physics: ClampingScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index ==
+                    child: (widgetLoading)
+                        ? Center(
+                            child: Loading(
+                              indicator: BallPulseIndicator(),
+                              size: 50.0,
+                              color: Colors.redAccent,
+                            ),
+                          )
+                        : Obx(
+                            () => ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: audioMsgListController
+                                  .searchaudioMsgList.length,
+                              physics: ClampingScrollPhysics(),
+                              itemBuilder: (BuildContext context, int index) {
+                                if (index ==
+                                        audioMsgListController
+                                                .searchaudioMsgList.length -
+                                            1 &&
+                                    isLoading == true) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                if (audioMsgListController
+                                        .searchaudioMsgList[index].id ==
+                                    null) {
                                   audioMsgListController
-                                          .searchaudioMsgList.length -
-                                      1 &&
-                              isLoading == true) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (audioMsgListController
-                                  .searchaudioMsgList[index].id ==
-                              null) {
-                            audioMsgListController.isMoreDataAvailable.value =
-                                false;
-                            return Container();
-                          }
+                                      .isMoreDataAvailable.value = false;
+                                  return Container();
+                                }
 
-                          return ListMessageWidget(
-                            aud_image: audioMsgListController
-                                .searchaudioMsgList[index].image,
-                            aud_link: audioMsgListController
-                                .searchaudioMsgList[index].link,
-                            aud_title: audioMsgListController
-                                .searchaudioMsgList[index].title,
-                            aud_id: audioMsgListController
-                                .searchaudioMsgList[index].id,
-                            aud_album: audioMsgListController
-                                .searchaudioMsgList[index].album,
-                            user_id: user_id.toString(),
-                            isPlayListed: audioMsgListController
-                                .searchaudioMsgList[index].isPlayListed,
-                          );
-                        },
-                      ),
-                    ),
+                                return ListMessageWidget(
+                                  aud_image: audioMsgListController
+                                      .searchaudioMsgList[index].image,
+                                  aud_link: audioMsgListController
+                                      .searchaudioMsgList[index].link,
+                                  aud_title: audioMsgListController
+                                      .searchaudioMsgList[index].title,
+                                  aud_id: audioMsgListController
+                                      .searchaudioMsgList[index].id,
+                                  aud_album: audioMsgListController
+                                      .searchaudioMsgList[index].album,
+                                  user_id: user_id.toString(),
+                                  isPlayListed: audioMsgListController
+                                      .searchaudioMsgList[index].isPlayListed,
+                                );
+                              },
+                            ),
+                          ),
                   ),
                 ],
               ),

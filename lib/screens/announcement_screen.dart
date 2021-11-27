@@ -12,6 +12,35 @@ class AnnouncementScreen extends StatefulWidget {
 
 class _AnnouncementScreenState extends State<AnnouncementScreen> {
   final anListController = AnnouncementController().getXID;
+  late ScrollController _controller;
+  var current_page = 1;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    anListController.getData();
+    _controller = ScrollController()..addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      setState(() {
+        isLoading = true;
+        current_page++;
+      });
+
+      //
+
+      anListController.getDataMore(current_page);
+
+      Future.delayed(new Duration(seconds: 4), () {
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +51,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
         title: Text('Announcement'),
       ),
       body: SingleChildScrollView(
-        controller: anListController.announcementScrollController,
+        controller: _controller,
         child: Obx(
           () => ListView.builder(
             shrinkWrap: true,
@@ -31,13 +60,12 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
             itemCount: anListController.annList.length,
             itemBuilder: (BuildContext context, int index) {
               if (index == anListController.annList.length - 1 &&
-                  anListController.isMoreDataAvailable.value == true) {
+                  isLoading == true) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               }
               if (anListController.annList[index].id == null) {
-                anListController.isMoreDataAvailable.value = false;
                 return Container();
               }
               return AnnouncementWidget(

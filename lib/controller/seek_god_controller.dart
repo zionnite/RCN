@@ -23,10 +23,8 @@ class SeekGodController extends GetxController {
   getSeekGod() async {
     var seeker = await ApiServices.getSeekGod(page_num);
     if (seeker != null) {
-      // sliderList.clear();
+      isDataProcessing(true);
       seekGodList.value = seeker;
-    } else {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -42,18 +40,9 @@ class SeekGodController extends GetxController {
 
   void getSeekGodMore(var page_num) async {
     var seeker = await ApiServices.getSeekGod(page_num);
-
     if (seeker != null) {
-      isMoreDataAvailable(true);
+      isDataProcessing(true);
       seekGodList.addAll(seeker);
-    } else {
-      print('Scroll fire');
-      isMoreDataAvailable(false);
-      showSnackBar('Oops!', "No more items", Colors.red);
-    }
-
-    if (isMoreDataAvailable == false) {
-      showSnackBar('Oops!', "No more items", Colors.red);
     }
   }
 
@@ -65,4 +54,10 @@ class SeekGodController extends GetxController {
       colorText: Colors.white,
     );
   }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   scrollController.dispose();
+  // }
 }

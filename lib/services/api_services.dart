@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
   static var client = http.Client();
-  static String _mybaseUrl = 'http://arome.joons-me.com/Api/';
+  static String _mybaseUrl = 'https://rcnapp.one/Api/';
   static String _sliderPath = 'get_slider';
   static String _seek_god = 'seek_god';
   static String _itinerary = 'itinerary';
@@ -40,6 +40,9 @@ class ApiServices {
   static String _live_stream_link = 'get_live_streaming_link';
   static String _video_playlist = 'get_video_playlist';
   static String _audio_playlist = 'get_audio_playlist';
+  static String _has_new_update = 'has_new_update';
+  static String _ios_store_link = 'ios_store_link';
+  static String _android_store_link = 'android_store_link';
 
   static Future<List<SliderModel>?> getApiSlider() async {
     final result = await client.get(Uri.parse('$_mybaseUrl$_sliderPath'));
@@ -331,8 +334,7 @@ class ApiServices {
       prefs.setString('phone_no', phone_no);
       prefs.setString('user_img', user_img);
       prefs.setBool('isUserLogin', true);
-      // prefs.setBool('profile_updated', is_profile_updated);
-      prefs.setBool('profile_updated', false);
+      prefs.setString('profile_updated', is_profile_updated);
       prefs.setString('user_name', user_name);
 
       return status;
@@ -370,7 +372,7 @@ class ApiServices {
       String phone_no = j['phone_no'];
       String user_img = j['user_img'];
       String user_name = j['user_name'];
-      bool is_profile_updated = j['is_profile_updated'];
+      String is_profile_updated = j['is_profile_updated'];
 
       prefs.setString('user_id', user_id);
       prefs.setString('full_name', full_name);
@@ -380,7 +382,7 @@ class ApiServices {
       prefs.setString('phone_no', phone_no);
       prefs.setString('user_img', user_img);
       prefs.setBool('isUserLogin', true);
-      prefs.setBool('profile_updated', is_profile_updated);
+      prefs.setString('profile_updated', is_profile_updated);
       prefs.setString('user_name', user_name);
 
       return status;
@@ -432,7 +434,7 @@ class ApiServices {
 
     var respond = await request.send();
     if (respond.statusCode == 200) {
-      var new_user_img = 'https://arome.joons-me.com/user_img/$user_name' +
+      var new_user_img = 'https://rcnapp.one/user_img/$user_name' +
           '/images/' +
           profileImage.filename!;
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -441,7 +443,7 @@ class ApiServices {
       prefs.setString('sex', sex);
       prefs.setString('phone_no', phone);
       prefs.setString('user_img', new_user_img);
-      prefs.setBool('profile_updated', true);
+      prefs.setString('profile_updated', "true");
       return true;
     } else {
       return false;
@@ -465,25 +467,25 @@ class ApiServices {
     return status;
   }
 
-  Future<int> isAppHasNewUpdate() async {
-    final response = await http.get(Uri.parse('$_mybaseUrl/has_new_update/'));
+  static Future<int> isAppHasNewUpdate() async {
+    final response = await http.get(Uri.parse('$_mybaseUrl$_has_new_update/'));
 
     Map<String, dynamic> j = json.decode(response.body);
     int counter = j['counter'];
     return counter;
   }
 
-  Future<String> iosStoreLink() async {
-    final response = await http.get(Uri.parse('$_mybaseUrl/ios_store_link/'));
+  static Future<String> iosStoreLink() async {
+    final response = await http.get(Uri.parse('$_mybaseUrl$_ios_store_link/'));
 
     Map<String, dynamic> j = json.decode(response.body);
     String counter = j['link'];
     return counter;
   }
 
-  Future<String> androidStoreLink() async {
+  static Future<String> androidStoreLink() async {
     final response =
-        await http.get(Uri.parse('$_mybaseUrl/android_store_link/'));
+        await http.get(Uri.parse('$_mybaseUrl$_android_store_link/'));
 
     Map<String, dynamic> j = json.decode(response.body);
     String counter = j['link'];

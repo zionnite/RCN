@@ -21,6 +21,36 @@ class _NearestRcnScreenState extends State<NearestRcnScreen> {
 
   final nearController = NearestRcnController().getXID;
 
+  late ScrollController _controller;
+  var current_page = 1;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    nearController.getData();
+    _controller = ScrollController()..addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      setState(() {
+        isLoading = true;
+        current_page++;
+      });
+
+      //
+
+      nearController.getDataMore(current_page);
+
+      Future.delayed(new Duration(seconds: 4), () {
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +62,7 @@ class _NearestRcnScreenState extends State<NearestRcnScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        controller: nearController.nearestScrollController,
+        controller: _controller,
         child: Card(
           child: Obx(
             () => ListView.builder(
@@ -42,7 +72,7 @@ class _NearestRcnScreenState extends State<NearestRcnScreen> {
               itemCount: nearController.nearList.length,
               itemBuilder: (BuildContext context, int index) {
                 if (index == nearController.nearList.length - 1 &&
-                    nearController.isMoreDataAvailable.value == true) {
+                    isLoading == true) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/state_manager.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:rcn/controller/video_msg_controller.dart';
 import 'package:rcn/widget/video_message_player_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +28,16 @@ class _searchVideoMessageScreenState extends State<searchVideoMessageScreen> {
   var user_id;
   var current_page = 1;
   bool isLoading = false;
+  bool widgetLoading = true;
+
+  getIfVideoLoaded() {
+    var loading = videoMsgListController.isDataSearchProcessing.value;
+    if (loading) {
+      setState(() {
+        widgetLoading = false;
+      });
+    }
+  }
 
   _initUserDetail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -52,6 +64,14 @@ class _searchVideoMessageScreenState extends State<searchVideoMessageScreen> {
     _initUserDetail();
 
     _controller = ScrollController()..addListener(_scrollListener);
+
+    Future.delayed(new Duration(seconds: 4), () {
+      if (mounted) {
+        setState(() {
+          getIfVideoLoaded();
+        });
+      }
+    });
   }
 
   void _scrollListener() {
@@ -70,9 +90,11 @@ class _searchVideoMessageScreenState extends State<searchVideoMessageScreen> {
       );
 
       Future.delayed(new Duration(seconds: 1), () {
-        setState(() {
-          isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
       });
     }
   }
@@ -185,54 +207,60 @@ class _searchVideoMessageScreenState extends State<searchVideoMessageScreen> {
               margin: EdgeInsets.only(
                 top: 0,
               ),
-              child: Column(
-                children: [
-                  Obx(
-                    () => ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      itemCount:
-                          videoMsgListController.searchvideoMsgList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index ==
+              child: (widgetLoading)
+                  ? Center(
+                      child: Loading(
+                        indicator: BallPulseIndicator(),
+                        size: 50.0,
+                        color: Colors.redAccent,
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        Obx(
+                          () => ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemCount: videoMsgListController
+                                .searchvideoMsgList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index ==
+                                      videoMsgListController
+                                              .searchvideoMsgList.length -
+                                          1 &&
+                                  isLoading == true) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              if (videoMsgListController
+                                      .searchvideoMsgList[index].id ==
+                                  null) {
                                 videoMsgListController
-                                        .searchvideoMsgList.length -
-                                    1 &&
-                            videoMsgListController.isMoreDataAvailable.value ==
-                                true &&
-                            isLoading == true) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (videoMsgListController
-                                .searchvideoMsgList[index].id ==
-                            null) {
-                          videoMsgListController.isMoreDataAvailable.value =
-                              false;
-                          return Container();
-                        }
-                        return VideoMessagePlayerWidget(
-                          vid_image: videoMsgListController
-                              .searchvideoMsgList[index].image,
-                          vid_link: videoMsgListController
-                              .searchvideoMsgList[index].link,
-                          vid_title: videoMsgListController
-                              .searchvideoMsgList[index].title,
-                          vid_id: videoMsgListController
-                              .searchvideoMsgList[index].id,
-                          user_id: user_id.toString(),
-                          isPlayListed: videoMsgListController
-                              .videoMsgList[index].isPlayListed,
-                          // vid_album: 'Ministration',
-                        );
-                      },
+                                    .isMoreDataAvailable.value = false;
+                                return Container();
+                              }
+                              return VideoMessagePlayerWidget(
+                                vid_image: videoMsgListController
+                                    .searchvideoMsgList[index].image,
+                                vid_link: videoMsgListController
+                                    .searchvideoMsgList[index].link,
+                                vid_title: videoMsgListController
+                                    .searchvideoMsgList[index].title,
+                                vid_id: videoMsgListController
+                                    .searchvideoMsgList[index].id,
+                                user_id: user_id.toString(),
+                                isPlayListed: videoMsgListController
+                                    .videoMsgList[index].isPlayListed,
+                                // vid_album: 'Ministration',
+                              );
+                            },
+                          ),
+                        ),
+                        //SelectedOptions(item_selected: _selectedChoices),
+                      ],
                     ),
-                  ),
-                  //SelectedOptions(item_selected: _selectedChoices),
-                ],
-              ),
             ),
           ],
         ),

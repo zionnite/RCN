@@ -267,7 +267,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           vertical: 10.0, horizontal: 8),
                       child: InkWell(
                         onTap: () async {
-                          if (_formKey.currentState!.validate()) {
+                          if (_formKey.currentState!.validate() &&
+                              profileImg != null) {
                             setState(() {
                               isPro = true;
                             });

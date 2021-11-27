@@ -14,6 +14,7 @@ import 'package:rcn/notifiers/play_button_notifier.dart';
 import 'package:rcn/notifiers/progress_notifier.dart';
 import 'package:rcn/notifiers/repeat_button_notifier.dart';
 import 'package:rcn/services/service_locator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MessagePlayer extends StatefulWidget {
   MessagePlayer({
@@ -45,6 +46,15 @@ class _MessagePlayerState extends State<MessagePlayer> {
   var progressString = "";
   double progress = 0.0;
   var totalSize;
+  bool? isDownloadWarningStatus;
+
+  _initUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var isDownloadWarning = prefs.getBool('isDownloadWarningStatus');
+    setState(() {
+      isDownloadWarningStatus = isDownloadWarning;
+    });
+  }
 
   _prepare() async {
     final status = await Permission.storage.request();
@@ -136,6 +146,8 @@ class _MessagePlayerState extends State<MessagePlayer> {
       url: widget.url,
       artUri: widget.artUri,
     );
+
+    _initUserDetail();
   }
 
   @override
@@ -213,6 +225,33 @@ class _MessagePlayerState extends State<MessagePlayer> {
             Container(
               child: AudioControlButtons(),
             ),
+            (isDownloadWarningStatus == null)
+                ? Container(
+                    //height: 10,
+                    color: Colors.yellowAccent,
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            child: Text(
+                                'Don\'t navigate from this page during download')),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool('isDownloadWarningStatus', true);
+                            setState(() {
+                              isDownloadWarningStatus = true;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(),
             Container(
               margin: EdgeInsets.only(top: 30),
               child: Row(
